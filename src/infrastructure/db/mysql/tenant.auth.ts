@@ -13,10 +13,10 @@ import { UsersTA } from "../../models/tenant.auth.users.schema";
  * @returns {object} Returns new `sequelize` object provided by `Sequelize` class.
  */
 const TA_SEQUELIZE = new Sequelize({
-    database: process.env.TA_DATABASE,
-    username: process.env.TA_USER,
-    password: process.env.TA_PASSWORD,
-    host: process.env.TA_HOST,
+    database: process.env.TA_MYSQL_DATABASE,
+    username: process.env.TA_MYSQL_USER,
+    password: process.env.TA_MYSQL_PASSWORD,
+    host: process.env.TA_MYSQL_HOST,
     dialect: "mysql", 
     models: [
         UsersTA
