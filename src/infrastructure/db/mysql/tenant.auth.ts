@@ -4,7 +4,7 @@
 import { Sequelize } from "sequelize-typescript";
 
 /**
- * @implements {model} UserTA
+ * @implements {model} UsersTA
  */
 import { UsersTA } from "../../models/tenant.auth.users.schema";
 

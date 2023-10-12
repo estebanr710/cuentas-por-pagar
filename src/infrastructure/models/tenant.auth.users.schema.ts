@@ -11,8 +11,8 @@ import { Table, Column, Model, DataType } from "sequelize-typescript";
 * @default
 */
 @Table({
-   timestamps:false,
-   tableName:"users"
+   timestamps: false,
+   tableName: "users"
 })
 
 /**
@@ -62,5 +62,5 @@ export class UsersTA extends Model {
     @Column({
         type: DataType.ENUM('user','admin',"superAdmin")
     })
-    rol!: string
+    rol!: string;
 }
