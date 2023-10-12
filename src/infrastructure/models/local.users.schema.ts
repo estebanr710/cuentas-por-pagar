@@ -19,7 +19,7 @@ import { Table, Column, Model, DataType } from "sequelize-typescript";
 * Declare tenant-auth model
 * @default
 */
-export class User extends Model {
+export default class User extends Model {
 
     // Name field
     @Column({

@@ -6,12 +6,13 @@ export class UserUseCase {
     constructor(private readonly userRepository: UserRepository) { }
 
     public async registerUser({ name, email, description }: { name: string, email: string, description: string }) {
-        const userValue = new UserValue({ name, email });
-        const userCreated = await this.userRepository.registerUser(userValue);
+        let userValue = new UserValue({ name, email });
+        let userCreated = await this.userRepository.registerUser(userValue);
         return userCreated;
     }
 
-    public registerUserAddNotify() {
-        // Something else here...
+    public async getDetailUser(id: string) {
+        const USER = await this.userRepository.findUserById(id);
+        return USER;
     }
 }

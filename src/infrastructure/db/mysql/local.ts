@@ -6,7 +6,7 @@ import { Sequelize } from "sequelize-typescript";
 /**
  * @implements {model} UsersTA
  */
-import { User } from "../../models/local.users.schema";
+import User from "../../models/local.users.schema";
 
 /**
  * DB Connection object.

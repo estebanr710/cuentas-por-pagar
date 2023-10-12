@@ -6,7 +6,7 @@ import { Sequelize } from "sequelize-typescript";
 /**
  * @implements {model} UsersTA
  */
-import { UsersTA } from "../../models/tenant.auth.users.schema";
+import { UserTA } from "../../models/tenant.auth.users.schema";
 
 /**
  * DB Connection object.
@@ -19,7 +19,7 @@ const TA_SEQUELIZE = new Sequelize({
     host: process.env.TA_MYSQL_HOST,
     dialect: "mysql", 
     models: [
-        UsersTA
+        UserTA
     ]
 });
 
