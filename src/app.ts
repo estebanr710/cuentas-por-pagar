@@ -25,14 +25,15 @@ import ROUTER from "./infrastructure/routes";
 
 /**
  * @implements {function} dbTenantAuthConnection
+ * @implements {function} dbLocalConnection
  */
-//import { conecctMysql } from "./config/mysql";
+import { dbLocalConnection } from "./infrastructure/db/mysql/local";
 import { dbTenantAuthConnection } from "./infrastructure/db/mysql/tenant.auth";
 
 /**
  * @implements {middleware} Custom header authentication middleware
  */
-import "./infrastructure/middlewares/auth";
+//import "./infrastructure/middlewares/auth";
 
 /**
  * Constant provided by `.env` file
@@ -57,14 +58,14 @@ app.use(ROUTER);
 
 /**
  * DB Connections launchers
- * [TenantAuth, Local]
+ * [ TENANT_AUTH, LOCAL ]
 */
 dbTenantAuthConnection();
-//conecctMysql()
+dbLocalConnection();
 
 /**
- * App launcher
+ * Application launcher
  */
 app.listen(PORT, () => {
-    console.log(`Application running at PORT: ${PORT}`)
+    console.log(`Application running at PORT: ${PORT}`);
 });

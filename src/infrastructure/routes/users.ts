@@ -1,3 +1,9 @@
-import { Router } from "express";
+import { Request, Response, Router } from "express";
 
-const ROUTE = Router();
+const ROUTER = Router();
+
+ROUTER.get("/", (req: Request, res: Response) => {
+    res.status(200).send("SOMETHING_HERE...");
+});
+
+export { ROUTER };

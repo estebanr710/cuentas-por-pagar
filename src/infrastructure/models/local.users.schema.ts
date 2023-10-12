@@ -1,23 +1,48 @@
-/* import { Schema, model } from "mongoose";
+/**
+* @implements {object} Table
+* @implements {object} Column
+* @implements {object} Model
+* @implements {object} DataType
+*/
+import { Table, Column, Model, DataType } from "sequelize-typescript";
 
-const UserSchema = new Schema(
-    {
-        name: {
-            type: String
-        },
-        email: {
-            type: String,
-            unique: true
-        },
-        description: {
-            type: String
-        }
-    },
-    {
-        timestamps: true
-    }
-);
+/**
+* Declare Tablename user
+* @default
+*/
+@Table({
+   timestamps: false,
+   tableName: "users"
+})
 
-const UserModel = model("users", UserSchema);
+/**
+* Declare tenant-auth model
+* @default
+*/
+export class User extends Model {
 
-export default UserModel; */
+    // Name field
+    @Column({
+        type: DataType.STRING,
+        primaryKey: true
+    })
+    id!: string;
+
+    // Email field
+    @Column({
+        type: DataType.STRING
+    })
+    name!: string;
+
+    // Email field
+    @Column({
+        type: DataType.STRING
+    })
+    email!: string;
+
+    // Password field
+    @Column({
+        type: DataType.STRING
+    })
+    description!: string;
+}
