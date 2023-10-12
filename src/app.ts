@@ -31,11 +31,6 @@ import { dbLocalConnection } from "./infrastructure/db/mysql/local";
 import { dbTenantAuthConnection } from "./infrastructure/db/mysql/tenant.auth";
 
 /**
- * @implements {middleware} Custom header authentication middleware
- */
-//import "./infrastructure/middlewares/auth";
-
-/**
  * Constant provided by `.env` file
  * @constant {object} PORT
  * @description `express` module constant
