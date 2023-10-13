@@ -39,9 +39,9 @@ const generateToken = (req: Request) => {
  */
 const verifyToken = (jwt: string) => {
 
-    const isOk = verify(jwt, JWT_SECRET);
+    const IS_OK = verify(jwt, JWT_SECRET);
     
-    return isOk;
+    return IS_OK;
 };
 
 /**
