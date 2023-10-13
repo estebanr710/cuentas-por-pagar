@@ -1,4 +1,4 @@
-import { Request, Response, Router } from "express";
+import { Router } from "express";
 import { MySqlUserRepository } from "../repositories/mysql/user.repository";
 import { UserUseCase } from "../../application/user.use.case";
 import { UserController } from "../controllers/user.controller";
