@@ -41,15 +41,15 @@ const PORT = process.env.PORT || 3001;
  * @constant {object} app
  * @description `express` module constant
  */
-const app = express();
+const APP = express();
 
 /**
  * App global configuration
  * [ cors, json, router ]
  */
-app.use(cors());
-app.use(express.json());
-app.use(ROUTER);
+APP.use(cors());
+APP.use(express.json());
+APP.use(ROUTER);
 
 /**
  * DB Connections launchers
@@ -61,6 +61,6 @@ dbLocalConnection();
 /**
  * Application launcher
  */
-app.listen(PORT, () => {
+APP.listen(PORT, () => {
     console.log(`Application running at PORT: ${PORT}`);
 });
