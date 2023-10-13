@@ -6,7 +6,7 @@ import { Sequelize } from "sequelize-typescript";
 /**
  * @implements {model} UsersTA
  */
-import User from "../../models/local.users.schema";
+import Invoice from "../../models/local.invoices.schema";
 
 /**
  * DB Connection object.
@@ -19,7 +19,7 @@ const LOCAL_SEQUELIZE = new Sequelize({
     host: process.env.LOCAL_HOST,
     dialect: "mysql", 
     models: [
-        User
+        Invoice
     ]
 });
 

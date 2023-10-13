@@ -1,5 +1,6 @@
 import { InvoiceEntity } from "./invoice.entity";
-import { v4 as uuid  } from "uuid"; 
+import { v4 as uuid  } from "uuid";
+import now from "../../infrastructure/handlers/handle.now";
 
 export class InvoiceValue implements InvoiceEntity {
     
@@ -14,10 +15,10 @@ export class InvoiceValue implements InvoiceEntity {
     inv_senders_email: string;
     inv_amount: number | null;
     inv_created_at: Date;
-    inv_modified_at: Date;
-    inv_modified_by: string;
-    inv_managed_at: Date;
-    inv_managed_by: string;
+    inv_modified_at: Date | null | undefined;
+    inv_modified_by: string | null | undefined;
+    inv_managed_at: Date | null | undefined;
+    inv_managed_by: string | null | undefined;
 
     constructor(
         {
@@ -29,11 +30,10 @@ export class InvoiceValue implements InvoiceEntity {
             inv_email_body,
             inv_senders_email,
             inv_amount,
-            inv_created_at,
             inv_modified_at,
             inv_modified_by,
             inv_managed_at,
-            inv_managed_by,
+            inv_managed_by
         }: InvoiceEntity
     ) {
         this.id = uuid();
@@ -45,10 +45,10 @@ export class InvoiceValue implements InvoiceEntity {
         this.inv_email_body = inv_email_body;
         this.inv_senders_email = inv_senders_email;
         this.inv_amount = inv_amount ?? null;
-        this.inv_created_at = inv_created_at;
-        this.inv_modified_at = inv_modified_at;
-        this.inv_modified_by = inv_modified_by;
-        this.inv_managed_at = inv_managed_at;
-        this.inv_managed_by = inv_managed_by;
+        this.inv_created_at = now();
+        this.inv_modified_at = inv_modified_at ?? null;
+        this.inv_modified_by = inv_modified_by ?? null;
+        this.inv_managed_at = inv_managed_at ?? null;
+        this.inv_managed_by = inv_managed_by ?? null;
     }
 }
