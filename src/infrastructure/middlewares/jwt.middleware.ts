@@ -29,10 +29,16 @@ const authMiddleware = async (req: Request, res: Response, next: NextFunction) =
         const IS_USER = verifyToken(`${JWT}`) as { id: string };
 
         if (!IS_USER) {
-
-            res.status(401);
-            res.send("Invalid JWT");
+            
+            res.status(401).send("Invalid JWT");
         } else {
+
+            const USER = await UserTA.findOne({ where: { id: IS_USER.id } });
+            
+            if (!USER) {
+                res.status(401).send("Invalid user's sign");
+            }
+
             next();
         }
     } catch (e) {
