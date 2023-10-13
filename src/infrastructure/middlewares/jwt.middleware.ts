@@ -33,9 +33,6 @@ const authMiddleware = async (req: Request, res: Response, next: NextFunction) =
             res.status(401);
             res.send("Invalid JWT");
         } else {
-
-            const USER = await UserTA.findOne({ where: { id: IS_USER.id } });
-            req.user = USER!;
             next();
         }
     } catch (e) {
