@@ -31,8 +31,12 @@ export class UserController {
     }
 
     public insertController = async (req: Request, res: Response) => {
-        let { use_name, use_email, use_microsoft_id } = matchedData(req);
-        const USER = await this.userUseCase.registerUser({ use_name, use_email, use_microsoft_id });
-        res.send(USER);
+        try {
+            let { use_name, use_email, use_microsoft_id } = matchedData(req);
+            const USER = await this.userUseCase.registerUser({ use_name, use_email, use_microsoft_id });
+            res.status(200).send(USER);    
+        } catch (e) {
+            console.log(`Error: ${e}`);
+        }
     }
 }
