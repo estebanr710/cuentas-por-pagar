@@ -36,6 +36,7 @@ export default class Role extends Model {
     })
     rol_description!: string;
 
+    // "One to one" relationship to "Users" table
     @HasOne(() => User, {
         foreignKey: "role_id"
     })

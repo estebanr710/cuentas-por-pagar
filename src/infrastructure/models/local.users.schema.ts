@@ -57,6 +57,7 @@ export default class User extends Model {
     })
     role_id!: string;
 
+    // "One to one" relationship to "Roles" table
     @BelongsTo(() => Role)
     role!: Role;
 }
