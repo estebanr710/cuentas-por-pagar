@@ -4,7 +4,8 @@
 * @implements {object} Model
 * @implements {object} DataType
 */
-import { Table, Column, Model, DataType } from "sequelize-typescript";
+import { Table, Column, Model, DataType, IsUUID, HasOne } from "sequelize-typescript";
+import User from "./local.users.schema";
 
 /**
 * Declare Tablename user
@@ -22,6 +23,7 @@ import { Table, Column, Model, DataType } from "sequelize-typescript";
 export default class Role extends Model {
 
     // ID <uuid> field
+    @IsUUID(4)
     @Column({
         type: DataType.STRING,
         primaryKey: true
@@ -33,4 +35,9 @@ export default class Role extends Model {
         type: DataType.STRING
     })
     rol_description!: string;
+
+    @HasOne(() => User, {
+        foreignKey: "role_id"
+    })
+    user!: User;
 }

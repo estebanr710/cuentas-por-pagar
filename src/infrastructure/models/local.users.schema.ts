@@ -4,7 +4,9 @@
 * @implements {object} Model
 * @implements {object} DataType
 */
-import { Table, Column, Model, DataType } from "sequelize-typescript";
+import { Table, Column, Model, DataType, HasOne, BelongsTo, PrimaryKey, IsUUID, ForeignKey } from "sequelize-typescript";
+
+import Role from "./local.roles.schema";
 
 /**
 * Declare Tablename user
@@ -21,28 +23,40 @@ import { Table, Column, Model, DataType } from "sequelize-typescript";
 */
 export default class User extends Model {
 
-    // Name field
+    // ID <uuid> field
+    @IsUUID(4)
     @Column({
         type: DataType.STRING,
         primaryKey: true
     })
     id!: string;
 
-    // Email field
+    // User name field
     @Column({
         type: DataType.STRING
     })
-    name!: string;
+    use_name!: string;
 
-    // Email field
+    // User email field
     @Column({
         type: DataType.STRING
     })
-    email!: string;
+    use_email!: string;
 
-    // Password field
+    // User Microsoft ID field
     @Column({
         type: DataType.STRING
     })
-    description!: string;
+    use_microsoft_id!: string;
+
+    // Role ID <Reference> field
+    @ForeignKey(() => Role)
+    @IsUUID(4)
+    @Column({
+        type: DataType.STRING
+    })
+    role_id!: string;
+
+    @BelongsTo(() => Role)
+    role!: Role;
 }
