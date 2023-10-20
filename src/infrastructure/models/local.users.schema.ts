@@ -50,8 +50,8 @@ export default class User extends Model {
     use_microsoft_id!: string;
 
     // Role ID <Reference> field
-    @ForeignKey(() => Role)
     @IsUUID(4)
+    @ForeignKey(() => Role)
     @Column({
         type: DataType.STRING
     })
