@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import { RoleUseCase } from "../../application/role.use.case";
 
+import { matchedData } from "express-validator";
+
 export class RoleController {
 
     constructor(private roleUseCase: RoleUseCase) {}
@@ -14,10 +16,11 @@ export class RoleController {
         }
     }
 
-    public insertController = async ({ body }: Request, res: Response) => {
+    public insertController = async (req: Request, res: Response) => {
         try {
-            let role = await this.roleUseCase.registerRole(body);
-            res.status(201).send(role);
+            let { rol_description } = matchedData(req);
+            const ROLE = await this.roleUseCase.registerRole({ rol_description });
+            res.status(201).send(ROLE);
         } catch (e) {
             console.log(`Error: ${e}`);
         }

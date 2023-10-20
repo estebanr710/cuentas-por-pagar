@@ -22,6 +22,9 @@ ROUTER.post("/",
     roleController.insertController
 );
 
-ROUTER.get("/", authMiddleware, roleController.getController);
+ROUTER.get("/", 
+    authMiddleware,
+    roleController.getController
+);
 
 export { ROUTER };
