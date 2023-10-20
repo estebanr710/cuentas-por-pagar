@@ -1,4 +1,3 @@
-import { RoleEntity } from "../../../domain/role/role.entity";
 import { RoleRepository } from "../../../domain/role/role.repository";
 
 import Role from "../../models/local.roles.schema";
@@ -13,5 +12,10 @@ export class MySqlRoleRepository implements RoleRepository {
     async listRoles(): Promise<any> {
         const ROLES = await Role.findAll();
         return ROLES;
+    }
+
+    async listRole(id: string): Promise<any | null> {
+        const ROLE = await Role.findByPk(id)
+        return ROLE;
     }
 }

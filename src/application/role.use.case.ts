@@ -16,4 +16,9 @@ export class RoleUseCase {
         const ROLES = await this.roleRepository.listRoles();
         return ROLES;
     }
+
+    public getRole = async (id: string) => {
+        const ROLE = await this.roleRepository.listRole(id);
+        return ROLE;
+    }
 }

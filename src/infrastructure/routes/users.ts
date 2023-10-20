@@ -10,8 +10,23 @@ const userReposotory = new MySqlUserRepository();
 const userUseCase = new UserUseCase(userReposotory);
 const userController = new UserController(userUseCase);
 
-//ROUTER.get("/", authMiddleware, userController.getController);
+import { validatorCreateUser, validatorUpdateUserRole } from "../validators/user.validator";
 
-ROUTER.post("/", userController.insertController);
+ROUTER.get("/", 
+    authMiddleware, 
+    userController.getController
+);
+
+ROUTER.post("/",
+    authMiddleware,
+    validatorCreateUser,
+    userController.insertController
+);
+
+ROUTER.put("/",
+    authMiddleware,
+    validatorUpdateUserRole,
+    userController.updateController
+);
 
 export { ROUTER };

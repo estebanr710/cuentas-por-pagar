@@ -1,16 +1,25 @@
-import { UserEntity } from "../../../domain/user/user.entity";
 import { UserRepository } from "../../../domain/user/user.repository";
 import User from "../../models/local.users.schema";
+import { MySqlRoleRepository } from "./role.repository";
 
 export class MySqlUserRepository implements UserRepository {
 
-    async findUserById(id: string): Promise<any> {
-        const USER = await User.findOne({ where: { id } });
-        return USER;
+    constructor(private mysqlRoleRepository = new MySqlRoleRepository) {}
+
+    async updateUser({ id, role_id }: { id: string, role_id: string }): Promise<any | null> {
+        let msg = '';
+        const CHECK_ROLE = await this.mysqlRoleRepository.listRole(role_id);
+        if (CHECK_ROLE) {  
+            await User.update({ role_id }, { where: { id } });
+            msg = "USER_UPDATED";
+        } else {
+            msg = "ROLE_NOT_EXISTS";
+        }
+        return msg;
     }
     
-    async registerUser(userData: any): Promise<any> {
-        const USER = await User.create(userData);
+    async registerUser(userMock: any): Promise<any> {
+        const USER = await User.create(userMock);
         return USER;
     }
     

@@ -1,4 +1,4 @@
-import { check}  from "express-validator";
+import { check }  from "express-validator";
 import { Request, Response, NextFunction } from "express";
 
 import validateResults from "../handlers/handle.validator";

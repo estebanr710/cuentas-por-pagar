@@ -1,4 +1,3 @@
-import { InvoiceEntity } from "../../../domain/invoice/invoice.entity";
 import { InvoiceRepository } from "../../../domain/invoice/invoice.repository";
 
 import Invoice from "../../models/local.invoices.schema";
