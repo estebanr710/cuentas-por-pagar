@@ -4,7 +4,8 @@
 * @implements {object} Model
 * @implements {object} DataType
 */
-import { Table, Column, Model, DataType } from "sequelize-typescript";
+import { Table, Column, Model, DataType, IsUUID, ForeignKey, BelongsTo } from "sequelize-typescript";
+import User from "./local.users.schema";
 
 /**
 * Declare Tablename user
@@ -22,6 +23,7 @@ import { Table, Column, Model, DataType } from "sequelize-typescript";
 export default class Invoice extends Model {
 
     // ID <uuid> field
+    @IsUUID(4)
     @Column({
         type: DataType.STRING,
         primaryKey: true
@@ -96,10 +98,16 @@ export default class Invoice extends Model {
     inv_modified_at!: Date;
     
     // Invoice modifiedBy <Reference> field
+    @IsUUID(4)
+    @ForeignKey(() => User)
     @Column({
         type: DataType.STRING
     })
     inv_modified_by!: string;
+
+    // "One to one" relationship to "Users" table
+    @BelongsTo(() => User)
+    modifier!: User;
     
     // Invoice managedAt <Timestamps> field
     @Column({
@@ -108,9 +116,14 @@ export default class Invoice extends Model {
     inv_managed_at!: Date;
     
     // Invoice managedBy <Reference> field
+    @IsUUID(4)
+    @ForeignKey(() => User)
     @Column({
         type: DataType.STRING
     })
     inv_managed_by!: string;
 
+    // "One to one" relationship to "Users" table
+    @BelongsTo(() => User)
+    manager!: User;
 }

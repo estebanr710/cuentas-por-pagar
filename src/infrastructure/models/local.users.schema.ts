@@ -7,6 +7,7 @@
 import { Table, Column, Model, DataType, HasOne, BelongsTo, PrimaryKey, IsUUID, ForeignKey } from "sequelize-typescript";
 
 import Role from "./local.roles.schema";
+import Invoice from "./local.invoices.schema";
 
 /**
 * Declare Tablename user
@@ -60,4 +61,16 @@ export default class User extends Model {
     // "One to one" relationship to "Roles" table
     @BelongsTo(() => Role)
     role!: Role;
+
+    // "One to one" relationship to "Invoices" table
+    @HasOne(() => Invoice, {
+        foreignKey: "inv_modified_by"
+    })
+    invoice_modifier!: Invoice;
+
+    // "One to one" relationship to "Invoices" table
+    @HasOne(() => Invoice, {
+        foreignKey: "inv_managed_by"
+    })
+    invoice_manager!: Invoice;
 }
