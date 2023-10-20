@@ -11,8 +11,8 @@ export class RoleUseCase {
         return roleCreated;
     }
 
-    /* public getDetailUser = async (id: string) => {
-        const USER = await this.userRepository.findUserById(id);
-        return USER;
-    } */
+    public getRoles = async () => {
+        const ROLES = await this.roleRepository.listRoles();
+        return ROLES;
+    }
 }

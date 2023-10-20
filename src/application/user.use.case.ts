@@ -5,13 +5,13 @@ export class UserUseCase {
 
     constructor(private readonly userRepository: UserRepository) { }
 
-    /* public registerUser = async ({ name, email, description }: { name: string, email: string, description: string }) => {
-        let userValue = new UserValue({ name, email, description });
+    public registerUser = async ({ use_name, use_email, use_microsoft_id, role_id }: UserValue) => {
+        let userValue = new UserValue({ use_name, use_email, use_microsoft_id, role_id });
         let userCreated = await this.userRepository.registerUser(userValue);
         return userCreated;
     }
 
-    public getDetailUser = async (id: string) => {
+    /* public getDetailUser = async (id: string) => {
         const USER = await this.userRepository.findUserById(id);
         return USER;
     } */

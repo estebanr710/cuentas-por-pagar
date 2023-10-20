@@ -10,7 +10,7 @@ const userReposotory = new MySqlUserRepository();
 const userUseCase = new UserUseCase(userReposotory);
 const userController = new UserController(userUseCase);
 
-ROUTER.get("/", authMiddleware, userController.getController);
+//ROUTER.get("/", authMiddleware, userController.getController);
 
 ROUTER.post("/", userController.insertController);
 

@@ -14,7 +14,7 @@ export class MySqlUserRepository implements UserRepository {
         return USER;
     }
     
-    async listUser(): Promise<any> {
+    async listUsers(): Promise<any> {
         const USERS = await User.findAll();
         return USERS;
     }

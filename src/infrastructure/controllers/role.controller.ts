@@ -5,17 +5,21 @@ export class RoleController {
 
     constructor(private roleUseCase: RoleUseCase) {}
 
-    /* public getController = async (req: Request, res: Response) => {
+    public getController = async (req: Request, res: Response) => {
         try {
-            let roles = await this.getController.getDetailUser(`${id}`);
-            res.send({ user });
+            let roles = await this.roleUseCase.getRoles();
+            res.send({ roles });
         } catch (e) {
             console.log(`Error: ${e}`);
         }
-    } */
+    }
 
     public insertController = async ({ body }: Request, res: Response) => {
-        let role = await this.roleUseCase.registerRole(body);
-        res.send({ role });
+        try {
+            let role = await this.roleUseCase.registerRole(body);
+            res.status(201).send(role);
+        } catch (e) {
+            console.log(`Error: ${e}`);
+        }
     }
 }

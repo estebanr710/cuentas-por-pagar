@@ -16,5 +16,6 @@ const roleUseCase = new RoleUseCase(roleReposotory);
 const roleController = new RoleController(roleUseCase);
 
 ROUTER.post("/", authMiddleware, roleController.insertController);
+ROUTER.get("/", authMiddleware, roleController.getController);
 
 export { ROUTER };
