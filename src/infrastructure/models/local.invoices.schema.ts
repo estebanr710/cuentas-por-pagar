@@ -4,7 +4,7 @@
 * @implements {object} Model
 * @implements {object} DataType
 */
-import { Table, Column, Model, DataType, IsUUID, ForeignKey, BelongsTo, HasOne } from "sequelize-typescript";
+import { Table, Column, Model, DataType, IsUUID, ForeignKey, BelongsTo, HasOne, HasMany } from "sequelize-typescript";
 import User from "./local.users.schema";
 import Attachment from "./local.attachments.schema";
 
@@ -129,7 +129,7 @@ export default class Invoice extends Model {
     manager!: User;
 
     // "One to one" relationship to "Attachments" table
-    @HasOne(() => Attachment, {
+    @HasMany(() => Attachment, {
         foreignKey: "invoice_id"
     })
     attachment!: Attachment;
