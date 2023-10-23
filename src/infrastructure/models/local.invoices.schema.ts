@@ -4,8 +4,9 @@
 * @implements {object} Model
 * @implements {object} DataType
 */
-import { Table, Column, Model, DataType, IsUUID, ForeignKey, BelongsTo } from "sequelize-typescript";
+import { Table, Column, Model, DataType, IsUUID, ForeignKey, BelongsTo, HasOne } from "sequelize-typescript";
 import User from "./local.users.schema";
+import Attachment from "./local.attachments.schema";
 
 /**
 * Declare Tablename user
@@ -17,7 +18,7 @@ import User from "./local.users.schema";
 })
 
 /**
-* Declare tenant-auth model
+* Declare invoice model
 * @default
 */
 export default class Invoice extends Model {
@@ -126,4 +127,10 @@ export default class Invoice extends Model {
     // "One to one" relationship to "Users" table
     @BelongsTo(() => User)
     manager!: User;
+
+    // "One to one" relationship to "Attachments" table
+    @HasOne(() => Attachment, {
+        foreignKey: "invoice_id"
+    })
+    attachment!: Attachment;
 }

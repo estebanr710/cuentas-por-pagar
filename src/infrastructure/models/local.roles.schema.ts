@@ -17,7 +17,7 @@ import User from "./local.users.schema";
 })
 
 /**
-* Declare tenant-auth model
+* Declare role model
 * @default
 */
 export default class Role extends Model {

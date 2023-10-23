@@ -19,7 +19,7 @@ import Invoice from "./local.invoices.schema";
 })
 
 /**
-* Declare tenant-auth model
+* Declare user model
 * @default
 */
 export default class User extends Model {

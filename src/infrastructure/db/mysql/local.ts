@@ -9,6 +9,7 @@ import { Sequelize } from "sequelize-typescript";
 import Invoice from "../../models/local.invoices.schema";
 import Role from "../../models/local.roles.schema";
 import User from "../../models/local.users.schema";
+import Attachment from "../../models/local.attachments.schema";
 
 /**
  * DB Connection object.
@@ -23,7 +24,8 @@ const LOCAL_SEQUELIZE = new Sequelize({
     models: [
         Invoice,
         Role,
-        User
+        User,
+        Attachment
     ]
 });
 

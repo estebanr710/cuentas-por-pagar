@@ -16,7 +16,7 @@ import { Table, Column, Model, DataType } from "sequelize-typescript";
 })
 
 /**
-* Declare tenant-auth model
+* Declare tenant-auth user model
 * @default
 */
 export class UserTA extends Model {
