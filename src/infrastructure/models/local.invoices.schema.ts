@@ -128,7 +128,7 @@ export default class Invoice extends Model {
     @BelongsTo(() => User)
     manager!: User;
 
-    // "One to one" relationship to "Attachments" table
+    // "One to many" relationship to "Attachments" table
     @HasMany(() => Attachment, {
         foreignKey: "invoice_id"
     })

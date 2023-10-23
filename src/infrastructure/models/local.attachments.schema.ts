@@ -38,7 +38,7 @@ export default class Attachment extends Model {
     })
     invoice_id!: string;
 
-    // "One to one" relationship to "Invoices" table
+    // "One to many" relationship to "Invoices" table
     @BelongsTo(() => Invoice)
     invoice!: Invoice;
 
