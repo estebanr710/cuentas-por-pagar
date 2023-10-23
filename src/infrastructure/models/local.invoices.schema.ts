@@ -132,5 +132,5 @@ export default class Invoice extends Model {
     @HasMany(() => Attachment, {
         foreignKey: "invoice_id"
     })
-    attachment!: Attachment[];
+    attachments!: Attachment[];
 }
