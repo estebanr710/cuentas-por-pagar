@@ -7,8 +7,8 @@ export class RoleUseCase {
     constructor(private readonly roleRepository: RoleRepository) { }
 
     public registerRole = async ({ rol_description }: RoleEntity) => {
-        let roleRepository = new RoleValue({ rol_description });
-        let roleCreated = await this.roleRepository.registerRole(roleRepository);
+        let roleValue = new RoleValue({ rol_description });
+        let roleCreated = await this.roleRepository.registerRole(roleValue);
         return roleCreated;
     }
 
