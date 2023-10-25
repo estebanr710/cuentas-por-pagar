@@ -46,4 +46,20 @@ export class AttachmentController {
             console.log(`Error: ${e}`);
         }
     }
+
+    // Get attachment's content by id
+    public getContentController = async (req: Request, res: Response) => {
+        try {
+            let { id } = matchedData(req);
+            const ATTACHMENT = await this.attachmentUseCase.getAttachment(id);
+            if (!ATTACHMENT) {
+                res.status(404).send({ status: 404, message: "ATTACHMENT_NOT_EXISTS" });
+            } else {
+                // Content...
+                res.send(ATTACHMENT);
+            }
+        } catch (e) {
+            console.log(`Error: ${e}`);
+        }
+    }
 }

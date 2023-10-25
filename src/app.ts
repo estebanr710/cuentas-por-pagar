@@ -45,10 +45,11 @@ const APP = express();
 
 /**
  * App global configuration
- * [ cors, json, router ]
+ * [ cors, json, router, public folder ]
  */
 APP.use(cors());
 APP.use(express.json());
+APP.use(express.static('temp'))
 APP.use(ROUTER);
 
 /**

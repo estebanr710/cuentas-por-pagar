@@ -21,4 +21,9 @@ export class AttachmentUseCase {
         const ATTACHMENT = await this.attachmentRepository.listAttachment(id);
         return ATTACHMENT;
     }
+
+    public getFileContent = async (id: string) => {
+        const FILE_CONTENT = await this.attachmentRepository.getFileContent(id);
+        return FILE_CONTENT;
+    }
 }
