@@ -76,7 +76,7 @@ const getDiggestValue = async (): Promise<string> => {
             "x": 1
         }
 
-        const PAYLOAD = {
+        const PAYLOAD: any = {
             headers: {
                 'Content-Type': 'application/json; odata=verbose',
                 Accept: "application/json; odata=verbose",
@@ -85,7 +85,7 @@ const getDiggestValue = async (): Promise<string> => {
             }
         };
 
-        const RESPONSE = await axios.post(ENDPOINT, DATA, PAYLOAD)
+        const RESPONSE: any = await axios.post(ENDPOINT, DATA, PAYLOAD)
 
         const SPLIT: any = RESPONSE.data.d.GetContextWebInformation.FormDigestValue.split(",");
 
