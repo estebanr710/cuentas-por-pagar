@@ -6,9 +6,9 @@ import authMiddleware from "../middlewares/jwt.middleware";
 
 const ROUTER = Router();
 
-const userReposotory = new MySqlUserRepository();
-const userUseCase = new UserUseCase(userReposotory);
-const userController = new UserController(userUseCase);
+let userReposotory = new MySqlUserRepository();
+let userUseCase = new UserUseCase(userReposotory);
+let userController = new UserController(userUseCase);
 
 import { validatorCreateUser, validatorUpdateUserRole } from "../validators/user.validator";
 

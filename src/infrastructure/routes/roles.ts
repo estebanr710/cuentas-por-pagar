@@ -12,9 +12,9 @@ import validatorCreateRole from "../validators/role.validator";
 
 const ROUTER = Router();
 
-const roleReposotory = new MySqlRoleRepository();
-const roleUseCase = new RoleUseCase(roleReposotory);
-const roleController = new RoleController(roleUseCase);
+let roleReposotory = new MySqlRoleRepository();
+let roleUseCase = new RoleUseCase(roleReposotory);
+let roleController = new RoleController(roleUseCase);
 
 ROUTER.post("/",
     authMiddleware,

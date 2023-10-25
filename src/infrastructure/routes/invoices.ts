@@ -11,9 +11,9 @@ import authMiddleware from "../middlewares/jwt.middleware";
 
 const ROUTER = Router();
 
-const invoiceReposotory = new MySqlInvoiceRepository();
-const invoiceUseCase = new InvoiceUseCase(invoiceReposotory);
-const invoiceController = new InvoiceController(invoiceUseCase);
+let invoiceReposotory = new MySqlInvoiceRepository();
+let invoiceUseCase = new InvoiceUseCase(invoiceReposotory);
+let invoiceController = new InvoiceController(invoiceUseCase);
 
 ROUTER.post("/", authMiddleware, invoiceController.insertController);
 

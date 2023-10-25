@@ -12,8 +12,8 @@ export class AttachmentUseCase {
         return attachmentCreated;
     }
 
-    public getAttachments = async () => {
-        const ATTACHMENTS = await this.attachmentRepository.listAttachments();
+    public getAttachments = async (invoice_id: string) => {
+        const ATTACHMENTS = await this.attachmentRepository.listAttachments(invoice_id);
         return ATTACHMENTS;
     }
 
