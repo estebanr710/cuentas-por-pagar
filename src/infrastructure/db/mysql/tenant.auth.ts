@@ -27,7 +27,7 @@ const TA_SEQUELIZE = new Sequelize({
  * DB Connection TA `async` function.
  * @returns {void}
  */
-  const dbTenantAuthConnection = async()=> {
+const dbTenantAuthConnection = async()=> {
     try {
         await TA_SEQUELIZE.authenticate();
         

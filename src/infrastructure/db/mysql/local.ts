@@ -39,7 +39,7 @@ const LOCAL_SEQUELIZE = new Sequelize({
  * DB Connection LOCAL `async` function.
  * @returns {void}
  */
-  const dbLocalConnection = async()=> {
+const dbLocalConnection = async()=> {
     try {
         await LOCAL_SEQUELIZE.authenticate();
         
