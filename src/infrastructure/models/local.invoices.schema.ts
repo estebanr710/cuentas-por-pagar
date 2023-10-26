@@ -5,8 +5,10 @@
 * @implements {object} DataType
 */
 import { Table, Column, Model, DataType, IsUUID, ForeignKey, BelongsTo, HasOne, HasMany } from "sequelize-typescript";
+
 import User from "./local.users.schema";
 import Attachment from "./local.attachments.schema";
+import State from "./local.states.schema";
 
 /**
 * Declare Tablename user
@@ -51,6 +53,8 @@ export default class Invoice extends Model {
     provider_id!: string;
     
     // State ID <Reference> field
+    @IsUUID(4)
+    @ForeignKey(() => State)
     @Column({
         type: DataType.STRING
     })
