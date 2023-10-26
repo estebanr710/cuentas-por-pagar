@@ -32,8 +32,7 @@ const dbTenantAuthConnection = async()=> {
         await TA_SEQUELIZE.authenticate();
         
         console.log("Successfull TENANT_AUTH connection");
-    } catch (e)
-    {
+    } catch (e) {
         console.log(`E-connect: ${e}`);
     }
 }

@@ -44,8 +44,7 @@ const dbLocalConnection = async()=> {
         await LOCAL_SEQUELIZE.authenticate();
         
         console.log("Successfull LOCAL connection");
-    } catch (e)
-    {
+    } catch (e) {
         console.log(`E-connect: ${e}`);
     }
 }
