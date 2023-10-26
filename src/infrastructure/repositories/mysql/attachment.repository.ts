@@ -27,4 +27,8 @@ export class MySqlAttachmentRepository implements AttachmentRepository {
         const ATTACHMENT = await Attachment.findByPk(id)
         return ATTACHMENT;
     }
+
+    async getFileContent(id: string): Promise<any> {
+        return null;
+    }
 }

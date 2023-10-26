@@ -32,4 +32,10 @@ ROUTER.get("/:id",
     attachmentController.getByIdController
 )
 
+ROUTER.get("/content/:id", 
+    authMiddleware,
+    validatorGetAttachmentById,
+    attachmentController.getContentController
+)
+
 export { ROUTER };

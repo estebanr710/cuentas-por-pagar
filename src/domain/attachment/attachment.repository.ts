@@ -4,4 +4,5 @@ export interface AttachmentRepository {
     registerAttachment(attachment: AttachmentEntity): Promise<AttachmentEntity | null | string>;
     listAttachments(invoice_id: string): Promise<AttachmentEntity[] | null>;
     listAttachment(id: string): Promise<AttachmentEntity | null>;
+    getFileContent(id: string): Promise<any | null>;
 }
