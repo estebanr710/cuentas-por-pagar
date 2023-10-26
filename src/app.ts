@@ -49,7 +49,7 @@ const APP = express();
  */
 APP.use(cors());
 APP.use(express.json());
-APP.use(express.static('temp'))
+APP.use(express.static('temp'));
 APP.use(ROUTER);
 
 /**
