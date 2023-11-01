@@ -9,6 +9,7 @@ import { Table, Column, Model, DataType, IsUUID, ForeignKey, BelongsTo, HasOne, 
 import User from "./local.users.schema";
 import Attachment from "./local.attachments.schema";
 import State from "./local.states.schema";
+import Provider from "./local.providers.schema";
 
 /**
 * Declare Tablename user
@@ -47,6 +48,8 @@ export default class Invoice extends Model {
     inv_title!: string;
 
     // Povider ID <Reference> field
+    @IsUUID(4)
+    @ForeignKey(() => Provider)
     @Column({
         type: DataType.STRING
     })
@@ -131,6 +134,10 @@ export default class Invoice extends Model {
     // "One to one" relationship to "Users" table
     @BelongsTo(() => User)
     manager!: User;
+
+    // "One to one" relationship to "Providers" table
+    @BelongsTo(() => Provider)
+    provider!: Provider;
 
     // "One to many" relationship to "Attachments" table
     @HasMany(() => Attachment, {
