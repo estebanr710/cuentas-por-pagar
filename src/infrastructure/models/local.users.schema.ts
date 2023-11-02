@@ -8,6 +8,7 @@ import { Table, Column, Model, DataType, HasOne, BelongsTo, PrimaryKey, IsUUID, 
 
 import Role from "./local.roles.schema";
 import Invoice from "./local.invoices.schema";
+import Note from "./local.notes.schema";
 
 /**
 * Declare Tablename user
@@ -66,11 +67,17 @@ export default class User extends Model {
     @HasOne(() => Invoice, {
         foreignKey: "inv_modified_by"
     })
-    invoice_modifier!: Invoice;
+    invoice_ref_1!: Invoice;
 
     // "One to one" relationship to "Invoices" table
     @HasOne(() => Invoice, {
         foreignKey: "inv_managed_by"
     })
-    invoice_manager!: Invoice;
+    invoice_ref_2!: Invoice;
+
+    // "One to one" relationship to "Notes" table
+    @HasOne(() => Note, {
+        foreignKey: "user_id"
+    })
+    note!: Note;
 }

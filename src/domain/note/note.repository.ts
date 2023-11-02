@@ -1,5 +1,5 @@
 import { NoteEntity } from "./note.entity";
 
 export interface NoteRepository {
-    registerNote(note: NoteEntity): Promise<NoteEntity | null>;
+    registerNote(note: NoteEntity): Promise<NoteEntity | null | string>;
 }

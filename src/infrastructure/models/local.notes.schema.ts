@@ -43,6 +43,18 @@ export default class Note extends Model {
     @BelongsTo(() => Invoice)
     invoice!: Invoice;
 
+    // User ID <Reference> field
+    @IsUUID(4)
+    @ForeignKey(() => User)
+    @Column({
+        type: DataType.STRING
+    })
+    user_id!: string;
+
+    // "One to one" relationship to "Users" table
+    @BelongsTo(() => User)
+    user!: User;
+
     // Note description field
     @Column({
         type: DataType.STRING
