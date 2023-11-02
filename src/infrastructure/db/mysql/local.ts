@@ -16,6 +16,7 @@ import User from "../../models/local.users.schema";
 import Attachment from "../../models/local.attachments.schema";
 import State from "../../models/local.states.schema";
 import Provider from "../../models/local.providers.schema";
+import Note from "../../models/local.notes.schema";
 
 /**
  * DB Connection object.
@@ -33,7 +34,8 @@ const LOCAL_SEQUELIZE = new Sequelize({
         User,
         Attachment,
         State,
-        Provider
+        Provider,
+        Note
     ]
 });
 

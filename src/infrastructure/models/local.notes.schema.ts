@@ -5,6 +5,7 @@
 * @implements {object} DataType
 */
 import { Table, Column, Model, DataType, IsUUID, HasOne, ForeignKey, BelongsTo } from "sequelize-typescript";
+import User from "./local.users.schema";
 import Invoice from "./local.invoices.schema";
 
 /**
@@ -13,14 +14,14 @@ import Invoice from "./local.invoices.schema";
 */
 @Table({
    timestamps: false,
-   tableName: "attachments"
+   tableName: "notes"
 })
 
 /**
-* Declare attachment model
+* Declare role model
 * @default
 */
-export default class Attachment extends Model {
+export default class Note extends Model {
 
     // ID <uuid> field
     @IsUUID(4)
@@ -42,21 +43,21 @@ export default class Attachment extends Model {
     @BelongsTo(() => Invoice)
     invoice!: Invoice;
 
-    // Attachment name field
+    // Note description field
     @Column({
         type: DataType.STRING
     })
-    att_name!: string;
+    not_description!: string;
 
-    // Attachment extension field
+    // Note type field
     @Column({
-        type: DataType.STRING
+        type: DataType.ENUM('OBSERVATION', 'EDITION', 'MANAGMENT')
     })
-    att_extension!: string;
+    not_type!: string;
 
-    // Attachment relative path field
+    // Note type field
     @Column({
-        type: DataType.STRING
+        type: DataType.DATE
     })
-    att_relative_path!: string;
+    not_datetime!: Date;
 }

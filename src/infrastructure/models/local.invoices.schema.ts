@@ -10,6 +10,7 @@ import User from "./local.users.schema";
 import Attachment from "./local.attachments.schema";
 import State from "./local.states.schema";
 import Provider from "./local.providers.schema";
+import Note from "./local.notes.schema";
 
 /**
 * Declare Tablename user
@@ -144,4 +145,10 @@ export default class Invoice extends Model {
         foreignKey: "invoice_id"
     })
     attachments!: Attachment[];
+
+    // "One to many" relationship to "Notes" table
+    @HasMany(() => Note, {
+        foreignKey: "invoice_id"
+    })
+    notes!: Note[];
 }
