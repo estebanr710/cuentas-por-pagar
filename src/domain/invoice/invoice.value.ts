@@ -2,6 +2,8 @@ import { InvoiceEntity } from "./invoice.entity";
 import { v4 as uuid  } from "uuid";
 import now from "../../infrastructure/handlers/handle.now";
 
+const NEW_STATE_ID: string = process.env.NEW_STATE_ID ?? '2df2c4e2-5e77-4cbe-9e66-d08b4fc2a480';
+
 export class InvoiceValue implements InvoiceEntity {
     
     id: string;
@@ -24,9 +26,7 @@ export class InvoiceValue implements InvoiceEntity {
         {
             inv_title,
             provider_id,
-            state_id,
             inv_cp_simi,
-            inv_simi_state,
             inv_email_body,
             inv_senders_email,
             inv_amount,
@@ -39,9 +39,9 @@ export class InvoiceValue implements InvoiceEntity {
         this.id = uuid();
         this.inv_title = inv_title ?? null;
         this.provider_id = provider_id ?? null;
-        this.state_id = state_id;
+        this.state_id = NEW_STATE_ID;
         this.inv_cp_simi = inv_cp_simi ?? null;
-        this.inv_simi_state = inv_simi_state;
+        this.inv_simi_state = false;
         this.inv_email_body = inv_email_body;
         this.inv_senders_email = inv_senders_email;
         this.inv_amount = inv_amount ?? null;
