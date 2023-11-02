@@ -19,9 +19,10 @@ const PATH_ROUTER = `${__dirname}`;
  * @param {string} fileName Name of the file 
  * @returns {string} Returns extension of file
  */
-const cleanFileName = (fileName:string) => {
+const cleanFileName = (fileName: string): string => {
 
-    const FILE = fileName.split(".").shift();
+    const FILE: string = fileName.split(".").shift() ?? '__default__';
+
     return FILE;
 }
 
