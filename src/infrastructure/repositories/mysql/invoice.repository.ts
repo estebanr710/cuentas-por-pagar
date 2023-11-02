@@ -1,3 +1,4 @@
+import { InvoiceEntity } from "../../../domain/invoice/invoice.entity";
 import { InvoiceRepository } from "../../../domain/invoice/invoice.repository";
 
 import Invoice from "../../models/local.invoices.schema";
@@ -17,5 +18,9 @@ export class MySqlInvoiceRepository implements InvoiceRepository {
     async listInvoices(): Promise<any> {
         const INVOICES = await Invoice.findAll();
         return INVOICES;
+    }
+
+    async updateInvoice(invoice: any): Promise<any> {
+        return null;
     }
 }

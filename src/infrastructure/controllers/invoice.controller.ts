@@ -6,7 +6,7 @@ export class InvoiceController {
     constructor(private invoiceUseCase: InvoiceUseCase) {}
 
     public insertController = async ({ body }: Request, res: Response) => {
-        let invoice = await this.invoiceUseCase.registerInvoice(body);
-        res.send({ invoice });
+        const INVOICE = await this.invoiceUseCase.registerInvoice(body);
+        res.status(201).send(INVOICE);
     }
 }
