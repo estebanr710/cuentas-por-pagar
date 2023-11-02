@@ -5,7 +5,7 @@ import { matchedData } from "express-validator";
 
 export class NoteController {
 
-    constructor(private noteUseCase: NoteUseCase) {}
+    constructor(private noteUseCase: NoteUseCase) { }
 
     public insertController = async (req: Request, res: Response) => {
         try {
