@@ -15,7 +15,7 @@ export class MySqlStateRepository implements StateRepository {
     }
 
     async listState(id: string): Promise<any | null> {
-        const STATE = await State.findByPk(id)
+        const STATE = await State.findByPk(id);
         return STATE;
     }
 }

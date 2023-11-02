@@ -21,7 +21,7 @@ export class UserController {
             let { id, role_id } = matchedData(req);
             let user = await this.userUseCase.changeUserRole({ id, role_id });
             if (user === "ROLE_NOT_EXISTS") {
-                res.status(404).send({ status: 403, message: "ROLE_NOT_EXISTS" });
+                res.status(404).send({ status: 404, message: "ROLE_NOT_EXISTS" });
             } else {
                 res.status(200).send({ status: 200, message: "ROLE_UPDATED" })
             }

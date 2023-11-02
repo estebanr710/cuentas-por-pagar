@@ -15,7 +15,7 @@ export class MySqlRoleRepository implements RoleRepository {
     }
 
     async listRole(id: string): Promise<any | null> {
-        const ROLE = await Role.findByPk(id)
+        const ROLE = await Role.findByPk(id);
         return ROLE;
     }
 }
