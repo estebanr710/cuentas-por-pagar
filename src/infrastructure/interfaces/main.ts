@@ -6,9 +6,9 @@ export interface InvoicesPaginated {
     totalPages: number,
     firstPage: number,
     lastPage: number,
-    previousPage: number,
+    previousPage: number | null,
     currentPage: number,
-    nextPage: number
+    nextPage: number | null
 }
 
 export interface FindInvoicesMock {

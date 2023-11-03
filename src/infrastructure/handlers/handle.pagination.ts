@@ -13,8 +13,8 @@ const getPagingData = (data: any, page: number, limit: number): InvoicesPaginate
     let lastPage = Math.ceil(totalItems / limit);
     let currentPage = page ? +page : 0;
     let totalPages = Math.ceil(totalItems / limit);
-    let nextPage = currentPage === totalPages ? totalPages : currentPage + 1;
-    let previousPage = firstPage === currentPage ? currentPage : currentPage - 1;
+    let nextPage = currentPage === totalPages ? null : currentPage + 1;
+    let previousPage = firstPage === currentPage ? null : currentPage - 1;
     return { invoices, totalItems, totalPages, firstPage, lastPage, previousPage, currentPage, nextPage };
 }
 
