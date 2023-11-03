@@ -17,3 +17,8 @@ export interface FindInvoicesMock {
     limit: number,
     offset: number
 }
+
+export interface Pagination {
+    limit: number,
+    offset: number 
+}

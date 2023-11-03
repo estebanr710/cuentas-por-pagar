@@ -1,6 +1,6 @@
-import { InvoicesPaginated } from "../interfaces/main";
+import { InvoicesPaginated, Pagination } from "../interfaces/main";
 
-const getPagination = (page: number, size: number): { limit: number, offset: number } => {
+const getPagination = (page: number, size: number): Pagination => {
     page = page - 1;
     let limit: number = size ? +size : 3;
     let offset: number = page ? page * limit : 0;
