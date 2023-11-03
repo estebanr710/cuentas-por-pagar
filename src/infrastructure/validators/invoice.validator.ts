@@ -12,4 +12,12 @@ const validatorCreateInvoice = [
     }
 ];
 
-export { validatorCreateInvoice };
+const validatorGetInvoices = [
+    check("page", "Invalid page [ min: 1 ]").isInt({ min: 1 }).exists().notEmpty(),
+    check("size", "Invalid size [ min: 1, max: 50 ]").isInt({ min: 1, max: 50 }).exists().notEmpty(),
+    (req: Request, res: Response, next: NextFunction) => {
+        return validateResults(req, res, next);
+    }
+];
+
+export { validatorCreateInvoice, validatorGetInvoices };

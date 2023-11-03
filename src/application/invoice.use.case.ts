@@ -1,6 +1,7 @@
 import { InvoiceRepository } from "../domain/invoice/invoice.repository"; 
 import { InvoiceValue } from "../domain/invoice/invoice.value";
 import { InvoiceEntity } from "../domain/invoice/invoice.entity";
+import { FindInvoicesMock } from "../infrastructure/interfaces/main";
 
 export class InvoiceUseCase {
 
@@ -17,5 +18,10 @@ export class InvoiceUseCase {
 
         let invoiceCreated = await this.invoiceRepository.registerInvoice(invoiceValue);
         return invoiceCreated;
+    }
+
+    public getInvoices = async (findMock: FindInvoicesMock) => {
+        const INVOICES = await this.invoiceRepository.listInvoices(findMock);
+        return INVOICES;
     }
 }

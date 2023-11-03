@@ -28,4 +28,9 @@ export class MySqlProviderRepository implements ProviderRepository {
             return null;
         }
     }
+
+    public async findProviderByEmail(pro_email: string): Promise<any> {
+        const PROVIDER = await Provider.findOne({ where: { pro_email } });
+        return PROVIDER;
+    }
 }
