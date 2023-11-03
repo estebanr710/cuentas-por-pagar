@@ -30,6 +30,12 @@ export default class Provider extends Model {
     })
     id!: string;
 
+    // Provider NIT field
+    @Column({
+        type: DataType.STRING
+    })
+    pro_nit!: string;
+
     // Provider name field
     @Column({
         type: DataType.STRING

@@ -6,8 +6,8 @@ export class ProviderUseCase {
 
     constructor(private readonly providerRepository: ProviderRepository) { }
 
-    public registerProvider = async ({ pro_name, pro_email }: ProviderEntity) => {
-        let providerValue = new ProviderValue({ pro_name, pro_email });
+    public registerProvider = async ({ pro_nit, pro_name, pro_email }: ProviderEntity) => {
+        let providerValue = new ProviderValue({ pro_nit, pro_name, pro_email });
         let providerCreated = await this.providerRepository.registerProvider(providerValue);
         return providerCreated;
     }
@@ -22,9 +22,9 @@ export class ProviderUseCase {
         return PROVIDER;
     }
 
-    public updateProvider = async (provider: { id: string, pro_name: string | undefined, pro_email: string | undefined, pro_state: boolean | undefined }) => {
-        let { id, pro_name, pro_email, pro_state } = provider;
-        let updateProvider = await this.providerRepository.updateProvider({ id, pro_name, pro_email, pro_state });
+    public updateProvider = async (provider: { id: string, pro_nit: string | undefined, pro_name: string | undefined, pro_email: string | undefined, pro_state: boolean | undefined }) => {
+        let { id, pro_nit, pro_name, pro_email, pro_state } = provider;
+        let updateProvider = await this.providerRepository.updateProvider({ id, pro_nit, pro_name, pro_email, pro_state });
         return updateProvider;
     }
 }

@@ -32,8 +32,8 @@ export class ProviderController {
 
     public insertController = async (req: Request, res: Response) => {
         try {
-            let { pro_name, pro_email } = matchedData(req);
-            const PROVIDER = await this.providerUseCase.registerProvider({ pro_name, pro_email });
+            let { pro_nit, pro_name, pro_email } = matchedData(req);
+            const PROVIDER = await this.providerUseCase.registerProvider({ pro_nit, pro_name, pro_email });
             res.status(200).send(PROVIDER);    
         } catch (e) {
             console.log(`Error: ${e}`);
@@ -42,8 +42,8 @@ export class ProviderController {
     
     public updateController = async (req: Request, res: Response) => {
         try {
-            let { id, pro_name, pro_email, pro_state } = matchedData(req);
-            let provider = await this.providerUseCase.updateProvider({ id, pro_name, pro_email, pro_state });
+            let { id, pro_nit, pro_name, pro_email, pro_state } = matchedData(req);
+            let provider = await this.providerUseCase.updateProvider({ id, pro_nit, pro_name, pro_email, pro_state });
             if (!provider) {
                 res.status(403).send({ status: 403, message: "ERROR_UPDATING_PROVIDER" });
             } else {

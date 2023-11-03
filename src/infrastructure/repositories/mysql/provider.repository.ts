@@ -20,8 +20,8 @@ export class MySqlProviderRepository implements ProviderRepository {
         return PROVIDER;
     }
     
-    async updateProvider({ id, pro_name, pro_email, pro_state }: { id: string, pro_name: string | undefined, pro_email: string | undefined, pro_state: boolean | undefined }): Promise<string | null> {
-        let updateProvider = await Provider.update({ pro_name, pro_email, pro_state }, { where: { id } });
+    async updateProvider({ id, pro_name, pro_nit, pro_email, pro_state }: { id: string, pro_name: string | undefined, pro_nit: string | undefined, pro_email: string | undefined, pro_state: boolean | undefined }): Promise<string | null> {
+        let updateProvider = await Provider.update({ pro_name, pro_nit, pro_email, pro_state }, { where: { id } });
         if (updateProvider) {
             return 'PROVIDER_UPDATED';
         } else {
