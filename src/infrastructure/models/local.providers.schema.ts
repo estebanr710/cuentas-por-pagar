@@ -8,7 +8,7 @@ import { Table, Column, Model, DataType, IsUUID, HasOne } from "sequelize-typesc
 import Invoice from "./local.invoices.schema";
 
 /**
-* Declare Tablename user
+* Declare Tablename providers
 * @default
 */
 @Table({

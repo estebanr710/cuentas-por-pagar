@@ -8,7 +8,7 @@ import { Table, Column, Model, DataType, IsUUID, HasOne } from "sequelize-typesc
 import User from "./local.users.schema";
 
 /**
-* Declare Tablename user
+* Declare Tablename roles
 * @default
 */
 @Table({

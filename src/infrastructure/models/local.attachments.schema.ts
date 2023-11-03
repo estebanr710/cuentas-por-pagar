@@ -8,7 +8,7 @@ import { Table, Column, Model, DataType, IsUUID, HasOne, ForeignKey, BelongsTo }
 import Invoice from "./local.invoices.schema";
 
 /**
-* Declare Tablename user
+* Declare Tablename attachments
 * @default
 */
 @Table({

@@ -13,7 +13,7 @@ import Provider from "./local.providers.schema";
 import Note from "./local.notes.schema";
 
 /**
-* Declare Tablename user
+* Declare Tablename invoices
 * @default
 */
 @Table({

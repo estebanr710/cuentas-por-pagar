@@ -9,7 +9,7 @@ import User from "./local.users.schema";
 import Invoice from "./local.invoices.schema";
 
 /**
-* Declare Tablename user
+* Declare Tablename notes
 * @default
 */
 @Table({

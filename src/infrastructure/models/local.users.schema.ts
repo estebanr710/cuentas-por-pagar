@@ -11,7 +11,7 @@ import Invoice from "./local.invoices.schema";
 import Note from "./local.notes.schema";
 
 /**
-* Declare Tablename user
+* Declare Tablename users
 * @default
 */
 @Table({
