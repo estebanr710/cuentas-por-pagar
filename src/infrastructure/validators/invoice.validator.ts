@@ -20,4 +20,11 @@ const validatorGetInvoices = [
     }
 ];
 
-export { validatorCreateInvoice, validatorGetInvoices };
+const validatorGetInvoice = [
+    check("id", "Invalid id [ min: 5, max: 50 ]").isLength({ min: 5, max: 50 }).exists().notEmpty(),
+    (req: Request, res: Response, next: NextFunction) => {
+        return validateResults(req, res, next);
+    }
+];
+
+export { validatorCreateInvoice, validatorGetInvoices, validatorGetInvoice };

@@ -19,4 +19,14 @@ export class InvoiceController {
         let invoices = await this.invoiceUseCase.getInvoices({ page, size, limit, offset });
         res.send(invoices);
     }
+
+    public getByIdController = async (req: Request, res: Response) => {
+        let { id } = matchedData(req);
+        const INVOICE = await this.invoiceUseCase.getInvoice(id);
+        if (INVOICE) {
+            res.send(INVOICE);
+        } else {
+            res.status(404).send({ status: 404, message: "INVOICE_NOT_FOUND" });
+        }
+    }
 }

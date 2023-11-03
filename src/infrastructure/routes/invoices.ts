@@ -8,7 +8,7 @@ import { InvoiceUseCase } from "../../application/invoice.use.case";
 import { InvoiceController } from "../controllers/invoice.controller"; 
 
 import authMiddleware from "../middlewares/jwt.middleware";
-import { validatorCreateInvoice, validatorGetInvoices } from "../validators/invoice.validator";
+import { validatorCreateInvoice, validatorGetInvoices, validatorGetInvoice } from "../validators/invoice.validator";
 
 const ROUTER = Router();
 
@@ -20,6 +20,12 @@ ROUTER.post("/",
     authMiddleware, 
     validatorCreateInvoice,
     invoiceController.insertController
+);
+
+ROUTER.get("/:id", 
+    authMiddleware, 
+    validatorGetInvoice,
+    invoiceController.getByIdController
 );
 
 ROUTER.get("/:page?:size?", 

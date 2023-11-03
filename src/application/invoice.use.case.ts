@@ -24,4 +24,9 @@ export class InvoiceUseCase {
         const INVOICES = await this.invoiceRepository.listInvoices(findMock);
         return INVOICES;
     }
+
+    public getInvoice = async (id: string) => {
+        const INVOICE = await this.invoiceRepository.findInvoiceById(id);
+        return INVOICE;
+    }
 }
