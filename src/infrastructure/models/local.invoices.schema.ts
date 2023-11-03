@@ -72,9 +72,9 @@ export default class Invoice extends Model {
 
     // Invoice SIMI state field
     @Column({
-        type: DataType.STRING
+        type: DataType.BOOLEAN
     })
-    inv_simi_state!: string;
+    inv_simi_state!: boolean;
     
     // Invoice email body field
     @Column({

@@ -1,7 +1,7 @@
 import Invoice from "../models/local.invoices.schema";
 
 export interface InvoicesPaginated {
-    invoices: any,
+    invoices: Invoice[],
     totalItems: number,
     totalPages: number,
     firstPage: number,
