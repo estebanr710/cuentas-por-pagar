@@ -55,6 +55,10 @@ export default class Invoice extends Model {
         type: DataType.STRING
     })
     provider_id!: string;
+
+    // "One to one" relationship to "Providers" table
+    @BelongsTo(() => Provider)
+    provider!: Provider;
     
     // State ID <Reference> field
     @IsUUID(4)
@@ -63,6 +67,10 @@ export default class Invoice extends Model {
         type: DataType.STRING
     })
     state_id!: string;
+
+    // "One to one" relationship to "States" table
+    @BelongsTo(() => State)
+    state!: State;
 
     // Invoice CP SIMI field
     @Column({
@@ -135,10 +143,6 @@ export default class Invoice extends Model {
     // "One to one" relationship to "Users" table
     @BelongsTo(() => User)
     manager!: User;
-
-    // "One to one" relationship to "Providers" table
-    @BelongsTo(() => Provider)
-    provider!: Provider;
 
     // "One to many" relationship to "Attachments" table
     @HasMany(() => Attachment, {

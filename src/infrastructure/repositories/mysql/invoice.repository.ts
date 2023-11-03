@@ -4,6 +4,10 @@ import Invoice from "../../models/local.invoices.schema";
 import { FindInvoicesMock } from "../../interfaces/main";
 import { getPagingData } from "../../handlers/handle.pagination";
 
+import State from "../../models/local.states.schema";
+import Provider from "../../models/local.providers.schema";
+import User from "../../models/local.users.schema";
+
 export class MySqlInvoiceRepository implements InvoiceRepository {
 
     constructor (private mysqlProviderRepository = new MySqlProviderRepository) { }
@@ -25,7 +29,46 @@ export class MySqlInvoiceRepository implements InvoiceRepository {
     
     async listInvoices(findMock: FindInvoicesMock): Promise<any> {
         let { page, size, limit, offset } = findMock;
-        let data = await Invoice.findAndCountAll({ limit, offset });
+        let data = await Invoice.findAndCountAll({
+            limit,
+            offset,
+            attributes: {
+                exclude: [
+                    "state_id",
+                    "provider_id",
+                    "inv_email_body",
+                    "inv_modified_by",
+                    "inv_managed_by"
+                ] 
+            },
+            include: [
+                {
+                    model: State
+                },
+                {
+                    model: Provider
+                },
+                {
+                    model: User,
+                    as: "modifier",
+                    attributes: [
+                        "id",
+                        "use_name"
+                    ]
+                },
+                {
+                    model: User,
+                    as: "manager",
+                    attributes: [
+                        "id",
+                        "use_name"
+                    ]
+                }
+            ],
+            order: [
+                ["inv_reference", "ASC"]
+            ]
+        });
         const INVOICES = getPagingData(data, page, limit);
         return INVOICES;
     }
