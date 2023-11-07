@@ -1,5 +1,8 @@
 import { UserRepository } from "../../../domain/user/user.repository";
+
+import Role from "../../models/local.roles.schema";
 import User from "../../models/local.users.schema";
+
 import { MySqlRoleRepository } from "./role.repository";
 
 export class MySqlUserRepository implements UserRepository {
@@ -30,7 +33,19 @@ export class MySqlUserRepository implements UserRepository {
     }
 
     async listUsers(): Promise<any> {
-        const USERS = await User.findAll();
+        const USERS = await User.findAll({
+            include: [
+                {
+                    model: Role
+                }
+            ],
+            attributes: {
+                exclude: [
+                    "use_microsoft_id",
+                    "role_id"
+                ]
+            }
+        });
         return USERS;
     }
 

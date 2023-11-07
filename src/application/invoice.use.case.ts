@@ -29,4 +29,9 @@ export class InvoiceUseCase {
         const INVOICE = await this.invoiceRepository.findInvoiceById(id);
         return INVOICE;
     }
+
+    public addApprovers = async ({ id, approvers }: { id: string, approvers: string[] }) => {
+        const APPROVERS = await this.invoiceRepository.addApprovers({ id, approvers });
+        return APPROVERS;
+    }
 }

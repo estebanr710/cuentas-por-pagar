@@ -11,6 +11,7 @@ import Attachment from "./local.attachments.schema";
 import State from "./local.states.schema";
 import Provider from "./local.providers.schema";
 import Note from "./local.notes.schema";
+import Approver from "./local.approvers.schema";
 
 /**
 * Declare Tablename invoices
@@ -155,4 +156,10 @@ export default class Invoice extends Model {
         foreignKey: "invoice_id"
     })
     notes!: Note[];
+
+    // "One to many" relationship to "Approvers" table
+    @HasMany(() => Approver, {
+        foreignKey: "invoice_id"
+    })
+    approvers!: Approver[];
 }

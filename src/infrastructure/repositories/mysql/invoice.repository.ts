@@ -1,19 +1,31 @@
 import { InvoiceRepository } from "../../../domain/invoice/invoice.repository";
+
 import { MySqlProviderRepository } from "./provider.repository";
-import Invoice from "../../models/local.invoices.schema";
+import { MySqlUserRepository } from "./user.repository";
+
 import { FindInvoicesMock } from "../../interfaces/main";
 import { getPagingData } from "../../handlers/handle.pagination";
 
+import Invoice from "../../models/local.invoices.schema";
 import State from "../../models/local.states.schema";
 import Provider from "../../models/local.providers.schema";
 import User from "../../models/local.users.schema";
 import Attachment from "../../models/local.attachments.schema";
 import Note from "../../models/local.notes.schema";
 import Role from "../../models/local.roles.schema";
+import Approver from "../../models/local.approvers.schema";
+import { ApproverUseCase } from "../../../application/approver.use.case";
+import { MySqlApproverRepository } from "./approver.repository";
 
 export class MySqlInvoiceRepository implements InvoiceRepository {
 
-    constructor (private mysqlProviderRepository = new MySqlProviderRepository) { }
+    
+    constructor (
+        private approverRepository = new MySqlApproverRepository(),
+        private approverUseCase = new ApproverUseCase(approverRepository),
+        private mysqlProviderRepository = new MySqlProviderRepository,
+        private mysqlUserRepository = new MySqlUserRepository
+    ) { }
 
     async findInvoiceById(id: string): Promise<any> {
         const INVOICE = await Invoice.findOne({
@@ -88,6 +100,25 @@ export class MySqlInvoiceRepository implements InvoiceRepository {
                             "user_id"
                         ]
                     }
+                },
+                {
+                    model: Approver,
+                    include: [
+                        {
+                            model: User,
+                            attributes: [
+                                "id",
+                                "use_name"
+                            ]
+                        }
+                    ],
+                    attributes: {
+                        exclude: [
+                            "id",
+                            "invoice_id",
+                            "user_id"
+                        ]
+                    }
                 }
             ],
             where: { id }
@@ -153,5 +184,21 @@ export class MySqlInvoiceRepository implements InvoiceRepository {
 
     async updateInvoice(invoice: any): Promise<any> {
         return null;
+    }
+
+    async addApprovers({ id, approvers }: { id: string, approvers: string[] }): Promise<any> {
+        if (!await this.findInvoiceById(id)) {
+            return 'INVOICE_NOT_FOUND';
+        }
+        for (const e of approvers) {    
+            if (!await this.mysqlUserRepository.listUserByIdV2(e)) {
+                return `USER_WITH_ID_${e}_NOT_FOUND`;
+            }
+            await this.approverUseCase.registerApprover({
+                user_id: e,
+                invoice_id: id
+            })
+        }
+        return "APPROVERS_ADDED";
     }
 }

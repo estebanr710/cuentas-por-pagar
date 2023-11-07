@@ -27,4 +27,17 @@ const validatorGetInvoice = [
     }
 ];
 
-export { validatorCreateInvoice, validatorGetInvoices, validatorGetInvoice };
+const validatorAddApprovers = [
+    check("id", "Invalid id [ min: 5, max: 50 ]").isLength({ min: 5, max: 50 }).exists().notEmpty(),
+    check("approvers", "Invalid approvers [ isArray, min: 1, max: 2 ]").isArray({ min: 1, max: 2 }).exists().notEmpty(),
+    (req: Request, res: Response, next: NextFunction) => {
+        return validateResults(req, res, next);
+    }
+];
+
+export {
+    validatorCreateInvoice,
+    validatorGetInvoices,
+    validatorGetInvoice,
+    validatorAddApprovers
+};
