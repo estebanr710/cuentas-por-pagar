@@ -55,4 +55,18 @@ export class InvoiceController {
             res.status(500).send(`Error: ${e}`);
         }
     }
+
+    public addNoteController = async (req: Request, res: Response) => {
+        try {
+            let { invoice_id, user_id, not_description } = matchedData(req);
+            const NOTE = await this.invoiceUseCase.addNote({ invoice_id, user_id, not_description });
+            if (NOTE !== "NOTE_ADDED") {
+                res.status(403).send({ status: 403, message: NOTE });
+            } else {
+                res.send({ status: 200, message: "NOTE_HAS_BEEN_SUCCESSFULLY_ADDED" });
+            }
+        } catch (e) {
+            res.status(500).send(`Error: ${e}`);
+        }
+    }
 }

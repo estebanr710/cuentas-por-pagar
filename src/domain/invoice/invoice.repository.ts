@@ -1,4 +1,5 @@
 import { FindInvoicesMock } from "../../infrastructure/interfaces/main";
+import { NoteEntity } from "../note/note.entity";
 import { InvoiceEntity } from "./invoice.entity";
 
 export interface InvoiceRepository {
@@ -7,4 +8,5 @@ export interface InvoiceRepository {
     listInvoices(findMock: FindInvoicesMock): Promise<InvoiceEntity[] | null>;
     updateInvoice(invoice: InvoiceEntity): Promise<string | null>;
     addApprovers({ id, approvers }: { id: string, approvers: string[] }): Promise<string | null>;
+    addNote(note: NoteEntity): Promise<string | null>;
 }

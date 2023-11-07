@@ -2,6 +2,7 @@ import { InvoiceRepository } from "../domain/invoice/invoice.repository";
 import { InvoiceValue } from "../domain/invoice/invoice.value";
 import { InvoiceEntity } from "../domain/invoice/invoice.entity";
 import { FindInvoicesMock } from "../infrastructure/interfaces/main";
+import { NoteEntity } from "../domain/note/note.entity";
 
 export class InvoiceUseCase {
 
@@ -33,5 +34,10 @@ export class InvoiceUseCase {
     public addApprovers = async ({ id, approvers }: { id: string, approvers: string[] }) => {
         const APPROVERS = await this.invoiceRepository.addApprovers({ id, approvers });
         return APPROVERS;
+    }
+
+    public addNote = async (note: NoteEntity) => {
+        const NOTE = await this.invoiceRepository.addNote(note);
+        return NOTE;
     }
 }

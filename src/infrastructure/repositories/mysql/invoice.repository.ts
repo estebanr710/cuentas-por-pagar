@@ -2,6 +2,8 @@ import { InvoiceRepository } from "../../../domain/invoice/invoice.repository";
 
 import { MySqlProviderRepository } from "./provider.repository";
 import { MySqlUserRepository } from "./user.repository";
+import { MySqlNoteRepository } from "./note.repository";
+import { MySqlApproverRepository } from "./approver.repository";
 
 import { FindInvoicesMock } from "../../interfaces/main";
 import { getPagingData } from "../../handlers/handle.pagination";
@@ -14,15 +16,23 @@ import Attachment from "../../models/local.attachments.schema";
 import Note from "../../models/local.notes.schema";
 import Role from "../../models/local.roles.schema";
 import Approver from "../../models/local.approvers.schema";
+
 import { ApproverUseCase } from "../../../application/approver.use.case";
-import { MySqlApproverRepository } from "./approver.repository";
+import { NoteUseCase } from "../../../application/note.use.case";
+
+import { NoteEntity } from "../../../domain/note/note.entity";
 
 export class MySqlInvoiceRepository implements InvoiceRepository {
 
     
     constructor (
+        //Approver
         private approverRepository = new MySqlApproverRepository(),
         private approverUseCase = new ApproverUseCase(approverRepository),
+        //Note
+        private noteRepository = new MySqlNoteRepository(),
+        private noteUseCase = new NoteUseCase(noteRepository),
+
         private mysqlProviderRepository = new MySqlProviderRepository,
         private mysqlUserRepository = new MySqlUserRepository
     ) { }
@@ -200,5 +210,17 @@ export class MySqlInvoiceRepository implements InvoiceRepository {
             })
         }
         return "APPROVERS_ADDED";
+    }
+
+    async addNote(note: NoteEntity): Promise<any> {
+        let { invoice_id, user_id } = note;
+        if (!await this.findInvoiceById(invoice_id)) {
+            return 'INVOICE_NOT_FOUND';
+        }
+        if (!await this.mysqlUserRepository.listUserByIdV2(user_id)) {
+            return `USER_NOT_FOUND`;
+        }
+        await this.noteUseCase.registerNote(note);
+        return "NOTE_ADDED";
     }
 }

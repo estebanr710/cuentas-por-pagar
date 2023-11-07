@@ -12,7 +12,8 @@ import {
     validatorCreateInvoice,
     validatorGetInvoices,
     validatorGetInvoice,
-    validatorAddApprovers
+    validatorAddApprovers,
+    validatorAddNote
 } from "../validators/invoice.validator";
 
 const ROUTER = Router();
@@ -43,6 +44,12 @@ ROUTER.put("/approvers/add",
     authMiddleware, 
     validatorAddApprovers,
     invoiceController.addApproverController
+);
+
+ROUTER.put("/notes/add", 
+    authMiddleware, 
+    validatorAddNote,
+    invoiceController.addNoteController
 );
 
 export { ROUTER };
