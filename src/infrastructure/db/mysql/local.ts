@@ -17,6 +17,7 @@ import Attachment from "../../models/local.attachments.schema";
 import State from "../../models/local.states.schema";
 import Provider from "../../models/local.providers.schema";
 import Note from "../../models/local.notes.schema";
+import Approver from "../../models/local.approvers.schema";
 
 /**
  * DB Connection object.
@@ -35,7 +36,8 @@ const LOCAL_SEQUELIZE = new Sequelize({
         Attachment,
         State,
         Provider,
-        Note
+        Note,
+        Approver
     ]
 });
 
