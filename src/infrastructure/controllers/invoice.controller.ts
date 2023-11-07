@@ -49,6 +49,9 @@ export class InvoiceController {
             if (APPROVERS !== "APPROVERS_ADDED") {
                 res.status(403).send({ status: 403, message: APPROVERS });
             } else {
+                /**
+                 * Send notifications to approvers...
+                 */
                 res.send({ status: 200, message: "APPROVERS_HAVE_BEEN_SUCCESSFULLY_ADDED" });
             }
         } catch (e) {

@@ -213,9 +213,6 @@ export class MySqlInvoiceRepository implements InvoiceRepository {
                 user_id: e,
                 invoice_id: id
             });
-            /**
-             * Send notifications to approvers...
-             */
         }
         return "APPROVERS_ADDED";
     }
