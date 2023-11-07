@@ -5,7 +5,7 @@ import { MySqlUserRepository } from "./user.repository";
 import { MySqlNoteRepository } from "./note.repository";
 import { MySqlApproverRepository } from "./approver.repository";
 
-import { FindInvoicesMock } from "../../interfaces/main";
+import { CustomInvoice, FindInvoicesMock } from "../../interfaces/main";
 import { getPagingData } from "../../handlers/handle.pagination";
 
 import Invoice from "../../models/local.invoices.schema";
@@ -21,10 +21,12 @@ import { ApproverUseCase } from "../../../application/approver.use.case";
 import { NoteUseCase } from "../../../application/note.use.case";
 
 import { NoteEntity } from "../../../domain/note/note.entity";
+import { ApproverEntity } from "../../../domain/approver/approver.entity";
+
+const APPROVED_STATE: string = process.env.APPROVED_STATE_ID ?? '__defalult__'
 
 export class MySqlInvoiceRepository implements InvoiceRepository {
 
-    
     constructor (
         //Approver
         private approverRepository = new MySqlApproverRepository(),
@@ -192,8 +194,10 @@ export class MySqlInvoiceRepository implements InvoiceRepository {
         return INVOICES;
     }
 
-    async updateInvoice(invoice: any): Promise<any> {
-        return null;
+    async updateInvoice(invoice: CustomInvoice): Promise<any> {
+        let { id } = invoice;
+        const INVOICE_UPDATED = await Invoice.update(invoice, { where: { id } });
+        return INVOICE_UPDATED;
     }
 
     async addApprovers({ id, approvers }: { id: string, approvers: string[] }): Promise<any> {
@@ -207,7 +211,10 @@ export class MySqlInvoiceRepository implements InvoiceRepository {
             await this.approverUseCase.registerApprover({
                 user_id: e,
                 invoice_id: id
-            })
+            });
+            /**
+             * Send notifications to approvers...
+             */
         }
         return "APPROVERS_ADDED";
     }
@@ -222,5 +229,46 @@ export class MySqlInvoiceRepository implements InvoiceRepository {
         }
         await this.noteUseCase.registerNote(note);
         return "NOTE_ADDED";
+    }
+
+    async approveInvoice(approver: ApproverEntity): Promise<any> {
+        let { user_id, invoice_id } = approver;
+        if (!await this.findInvoiceById(invoice_id)) {
+            return 'INVOICE_NOT_FOUND';
+        }
+        if (!await this.mysqlUserRepository.listUserByIdV2(user_id)) {
+            return 'USER_NOT_FOUND';
+        }
+        const APPROVER = await this.approverRepository.getApprovers({ user_id, invoice_id });
+        if (!APPROVER) {
+            return 'USER_IS_NOT_APPROVER_OF_THIS_INVOICE';
+        }
+        // Update approver
+        await this.approverUseCase.updateApprover({
+            user_id,
+            invoice_id,
+            app_state: true
+        });
+        // Proccess invoice
+        const COUNT_APPROVERS = await this.approverUseCase.getByInvoice(invoice_id);
+        if (!COUNT_APPROVERS) {
+            return "INVOICE_DOES_NOT_HAVE_APPROVERS";
+        }
+        const TOTAL: number = COUNT_APPROVERS.count;
+        let count: number = 0;
+        let names: string = '';
+        for (const e of COUNT_APPROVERS.rows) {
+            if (e.app_state === true) {
+                count++;
+            }
+            names += `${e.user.use_name} `;
+        }
+        names = names.trim();
+        let not_description: string = `Factura aprobada por: [${names}]`;
+        if (TOTAL === count) {
+            await this.updateInvoice({ id: invoice_id, state_id: APPROVED_STATE });
+            await this.noteUseCase.registerNote({ invoice_id, user_id, not_description, not_type: 'MANAGMENT' })
+        }
+        return "INVOICE_APPROVED";
     }
 }

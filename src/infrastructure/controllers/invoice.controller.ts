@@ -69,4 +69,18 @@ export class InvoiceController {
             res.status(500).send(`Error: ${e}`);
         }
     }
+    
+    public aproveController = async (req: Request, res: Response) => {
+        try {
+            let { invoice_id, user_id } = matchedData(req);
+            const APPROVE = await this.invoiceUseCase.approveInvoice({ invoice_id, user_id });
+            if (APPROVE !== "INVOICE_APPROVED") {
+                res.status(403).send({ status: 403, message: APPROVE });
+            } else {
+                res.send({ status: 200, message: "INVOICE_HAS_BEEN_SUCCESSFULLY_APPROVED" });
+            }
+        } catch (e) {
+            res.status(500).send(`Error: ${e}`);
+        }
+    }
 }

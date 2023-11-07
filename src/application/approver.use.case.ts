@@ -11,4 +11,14 @@ export class ApproverUseCase {
         let approverCreated = await this.approverRepository.registerApprover(approverValue);
         return approverCreated;
     }
+
+    public updateApprover = async (updateMock: ApproverEntity) => {
+        const UPDATED = await this.approverRepository.updateApprover(updateMock);
+        return UPDATED;
+    }
+
+    public getByInvoice = async (id: string) => {
+        const APPROVERS = await this.approverRepository.getByInvoice(id);
+        return APPROVERS;
+    }
 }

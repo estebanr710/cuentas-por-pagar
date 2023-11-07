@@ -44,10 +44,19 @@ const validatorAddNote = [
     }
 ];
 
+const validatorApproveInvoice = [
+    check("invoice_id", "Invalid invoice_id [min_length: 5, max_length: 50]").exists().notEmpty().isLength({ min: 5, max: 50 }),
+    check("user_id", "Invalid user_id [min_length: 5, max_length: 50]").exists().notEmpty().isLength({ min: 5, max: 50 }),
+    (req: Request, res: Response, next: NextFunction) => {
+        return validateResults(req, res, next);
+    }
+];
+
 export {
     validatorCreateInvoice,
     validatorGetInvoices,
     validatorGetInvoice,
     validatorAddApprovers,
-    validatorAddNote
+    validatorAddNote,
+    validatorApproveInvoice
 };

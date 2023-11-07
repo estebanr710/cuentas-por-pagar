@@ -3,6 +3,7 @@ import { InvoiceValue } from "../domain/invoice/invoice.value";
 import { InvoiceEntity } from "../domain/invoice/invoice.entity";
 import { FindInvoicesMock } from "../infrastructure/interfaces/main";
 import { NoteEntity } from "../domain/note/note.entity";
+import { ApproverEntity } from "../domain/approver/approver.entity";
 
 export class InvoiceUseCase {
 
@@ -39,5 +40,10 @@ export class InvoiceUseCase {
     public addNote = async (note: NoteEntity) => {
         const NOTE = await this.invoiceRepository.addNote(note);
         return NOTE;
+    }
+
+    public approveInvoice = async (approver: ApproverEntity) => {
+        const APPROVE = await this.invoiceRepository.approveInvoice(approver);
+        return APPROVE;
     }
 }
