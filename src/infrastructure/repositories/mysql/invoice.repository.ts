@@ -22,6 +22,7 @@ import { NoteUseCase } from "../../../application/note.use.case";
 
 import { NoteEntity } from "../../../domain/note/note.entity";
 import { ApproverEntity } from "../../../domain/approver/approver.entity";
+import now from "../../handlers/handle.now";
 
 const APPROVED_STATE: string = process.env.APPROVED_STATE_ID ?? '__defalult__'
 
@@ -249,6 +250,7 @@ export class MySqlInvoiceRepository implements InvoiceRepository {
             invoice_id,
             app_state: true
         });
+        await this.updateInvoice({ id: invoice_id, inv_managed_at: now(), inv_managed_by: user_id });
         // Proccess invoice
         const COUNT_APPROVERS = await this.approverUseCase.getByInvoice(invoice_id);
         if (!COUNT_APPROVERS) {
@@ -256,19 +258,15 @@ export class MySqlInvoiceRepository implements InvoiceRepository {
         }
         const TOTAL: number = COUNT_APPROVERS.count;
         let count: number = 0;
-        let names: string = '';
         for (const e of COUNT_APPROVERS.rows) {
             if (e.app_state === true) {
                 count++;
             }
-            names += `${e.user.use_name} `;
         }
-        names = names.trim();
-        let not_description: string = `Factura aprobada por: [${names}]`;
         if (TOTAL === count) {
             await this.updateInvoice({ id: invoice_id, state_id: APPROVED_STATE });
-            await this.noteUseCase.registerNote({ invoice_id, user_id, not_description, not_type: 'MANAGMENT' })
         }
+        await this.noteUseCase.registerNote({ invoice_id, user_id, not_description: 'Factura aprobada', not_type: 'MANAGMENT' });
         return "INVOICE_APPROVED";
     }
 }
