@@ -277,6 +277,12 @@ export class MySqlInvoiceRepository implements InvoiceRepository {
             } else {
                 // If the admin user is approver of the invoice
                 if (APPROVER) {
+                    // Update 'managed' fields [timestamps and managed by] on invoice record
+                    await this.updateInvoice({
+                        id: invoice_id,
+                        inv_managed_at: now(),
+                        inv_managed_by: user_id
+                    });
                     // Update approver
                     await this.approverUseCase.updateApprover({
                         user_id,
