@@ -40,3 +40,9 @@ export interface CustomInvoice {
     inv_managed_at?: Date | null;
     inv_managed_by?: string | null;
 }
+
+export interface AddApprovers {
+    id: string,
+    user_id: string,
+    approvers: string[]
+}

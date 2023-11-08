@@ -40,8 +40,8 @@ export class MySqlApproverRepository implements ApproverRepository {
         return APPROVERS;
     }
 
-    public async getApprovers({ invoice_id, user_id }: { invoice_id: string, user_id: string }): Promise<any> {
-        const APROVERS = await Approver.findOne({ where: { invoice_id, user_id } });
-        return APROVERS;
+    public async getApprover({ invoice_id, user_id }: { invoice_id: string, user_id: string }): Promise<any> {
+        const APROVER = await Approver.findOne({ where: { invoice_id, user_id } });
+        return APROVER;
     }
 }

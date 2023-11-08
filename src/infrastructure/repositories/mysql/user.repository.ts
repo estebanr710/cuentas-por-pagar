@@ -55,7 +55,16 @@ export class MySqlUserRepository implements UserRepository {
     }
 
     public async listUserByIdV2(id: string): Promise<any> {
-        const USER = await User.findOne({ where: { id } });
+        const USER = await User.findOne({
+            where: {
+                id
+            },
+            include: [
+                {
+                    model: Role
+                }
+            ]
+        });
         return USER;
     }
 }

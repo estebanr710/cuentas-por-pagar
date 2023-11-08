@@ -44,8 +44,12 @@ export class InvoiceController {
 
     public addApproverController = async (req: Request, res: Response) => {
         try {
-            let { id, approvers } = matchedData(req);
-            const APPROVERS = await this.invoiceUseCase.addApprovers({ id, approvers });
+            let { id, user_id, approvers } = matchedData(req);
+            const APPROVERS = await this.invoiceUseCase.addApprovers({
+                id,
+                user_id,
+                approvers
+            });
             if (APPROVERS !== "APPROVERS_ADDED") {
                 res.status(403).send({ status: 403, message: APPROVERS });
             } else {

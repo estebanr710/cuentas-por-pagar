@@ -5,7 +5,7 @@ import { MySqlUserRepository } from "./user.repository";
 import { MySqlNoteRepository } from "./note.repository";
 import { MySqlApproverRepository } from "./approver.repository";
 
-import { CustomInvoice, FindInvoicesMock } from "../../interfaces/main";
+import { AddApprovers, CustomInvoice, FindInvoicesMock } from "../../interfaces/main";
 import { getPagingData } from "../../handlers/handle.pagination";
 
 import Invoice from "../../models/local.invoices.schema";
@@ -26,6 +26,9 @@ import now from "../../handlers/handle.now";
 
 const APPROVED_STATE: string = process.env.APPROVED_STATE_ID ?? '__defalult__';
 const REJECTED_STATE: string = process.env.REJECTED_STATE_ID ?? '__defalult__';
+const IN_PROCESS_STATE: string = process.env.IN_PROCESS_STATE_ID ?? '__defalult__';
+
+const ADMIN_ROLE: string = process.env.ADMIN_ROLE_ID ?? '__defalult__';
 
 export class MySqlInvoiceRepository implements InvoiceRepository {
 
@@ -202,7 +205,7 @@ export class MySqlInvoiceRepository implements InvoiceRepository {
         return INVOICE_UPDATED;
     }
 
-    async addApprovers({ id, approvers }: { id: string, approvers: string[] }): Promise<any> {
+    async addApprovers({ id, user_id, approvers }: AddApprovers): Promise<any> {
         if (!await this.findInvoiceById(id)) {
             return 'INVOICE_NOT_FOUND';
         }
@@ -215,6 +218,20 @@ export class MySqlInvoiceRepository implements InvoiceRepository {
                 invoice_id: id
             });
         }
+        // Change invoice's state to 'IN PROCESS'
+        await this.updateInvoice({
+            id,
+            inv_managed_at: now(),
+            inv_managed_by: user_id,
+            state_id: IN_PROCESS_STATE
+        });
+        // Add note
+        await this.noteUseCase.registerNote({
+            invoice_id: id,
+            user_id,
+            not_description: 'Factura asignada',
+            not_type: 'MANAGMENT'
+        });
         return "APPROVERS_ADDED";
     }
 
@@ -235,43 +252,100 @@ export class MySqlInvoiceRepository implements InvoiceRepository {
         if (!await this.findInvoiceById(invoice_id)) {
             return 'INVOICE_NOT_FOUND';
         }
-        if (!await this.mysqlUserRepository.listUserByIdV2(user_id)) {
+        const USER = await this.mysqlUserRepository.listUserByIdV2(user_id);
+        if (!USER) {
             return 'USER_NOT_FOUND';
         }
-        const APPROVER = await this.approverRepository.getApprovers({ user_id, invoice_id });
-        if (!APPROVER) {
-            return 'USER_IS_NOT_APPROVER_OF_THIS_INVOICE';
-        }
-        // Update approver
-        await this.approverUseCase.updateApprover({
-            user_id,
-            invoice_id,
-            app_state: true
-        });
-        await this.updateInvoice({
-            id: invoice_id,
-            inv_managed_at: now(),
-            inv_managed_by: user_id
-        });
-        // Proccess invoice
+        // Get all the approvers of the invoice
         const COUNT_APPROVERS = await this.approverUseCase.getByInvoice(invoice_id);
-        if (!COUNT_APPROVERS) {
-            return "INVOICE_DOES_NOT_HAVE_APPROVERS";
-        }
-        const TOTAL: number = COUNT_APPROVERS.count;
-        let count: number = 0;
-        for (const e of COUNT_APPROVERS.rows) {
-            if (e.app_state === true) {
-                count++;
+        // Get the current invoice approver
+        const APPROVER = await this.approverRepository.getApprover({
+            user_id,
+            invoice_id
+        });
+        // If the current user is admin
+        if (USER.role.id === ADMIN_ROLE) {
+            // If invoice doesn't have approvers
+            if (!COUNT_APPROVERS) {
+                // Update 'managed' fields [timestamps and managed by] on invoice record
+                await this.updateInvoice({
+                    id: invoice_id,
+                    inv_managed_at: now(),
+                    inv_managed_by: user_id,
+                    state_id: APPROVED_STATE
+                });
+            } else {
+                // If the admin user is approver of the invoice
+                if (APPROVER) {
+                    // Update approver
+                    await this.approverUseCase.updateApprover({
+                        user_id,
+                        invoice_id,
+                        app_state: true
+                    });
+                    const TOTAL: number = COUNT_APPROVERS.count;
+                    let count: number = 0;
+                    for (const e of COUNT_APPROVERS.rows) {
+                        if (e.app_state === true) {
+                            count++;
+                        }
+                    }
+                    // If all the approvers of the invoice have approved the invoice
+                    if (TOTAL === count) {
+                        // Change the invoice's state to 'APPROVED'
+                        await this.updateInvoice({
+                            id: invoice_id,
+                            state_id: APPROVED_STATE
+                        });
+                    }
+                } else { 
+                    return "NO_MESAGGE";
+                }
             }
-        }
-        if (TOTAL === count) {
+        } else {
+            // If invoice doesn't have approvers
+            if (!COUNT_APPROVERS) {
+                return "INVOICE_DOES_NOT_HAVE_APPROVERS";
+            }
+            // If the user isn't the approver of the invoice
+            if (!APPROVER) {
+                return 'USER_IS_NOT_APPROVER_OF_THIS_INVOICE';
+            }
+            // Update approver
+            await this.approverUseCase.updateApprover({
+                user_id,
+                invoice_id,
+                app_state: true
+            });
+            // Update 'managed' fields [timestamps and managed by] on invoice record
             await this.updateInvoice({
                 id: invoice_id,
-                state_id: APPROVED_STATE
+                inv_managed_at: now(),
+                inv_managed_by: user_id
             });
+            const TOTAL: number = COUNT_APPROVERS.count;
+            let count: number = 0;
+            for (const e of COUNT_APPROVERS.rows) {
+                if (e.app_state === true) {
+                    count++;
+                }
+            }
+            // If all the approvers of the invoice have approved the invoice
+            if (TOTAL === count) {
+                // Change the invoice's state to 'APPROVED'
+                await this.updateInvoice({
+                    id: invoice_id,
+                    state_id: APPROVED_STATE
+                });
+            }
         }
-        await this.noteUseCase.registerNote({ invoice_id, user_id, not_description: 'Factura aprobada', not_type: 'MANAGMENT' });
+        // Add note
+        await this.noteUseCase.registerNote({
+            invoice_id,
+            user_id,
+            not_description: 'Factura aprobada',
+            not_type: 'MANAGMENT'
+        });
         return "INVOICE_APPROVED";
     }
 
@@ -280,28 +354,36 @@ export class MySqlInvoiceRepository implements InvoiceRepository {
         if (!await this.findInvoiceById(invoice_id)) {
             return 'INVOICE_NOT_FOUND';
         }
-        if (!await this.mysqlUserRepository.listUserByIdV2(user_id)) {
+        const USER = await this.mysqlUserRepository.listUserByIdV2(user_id);
+        if (!USER) {
             return 'USER_NOT_FOUND';
         }
-        const APPROVER = await this.approverRepository.getApprovers({ user_id, invoice_id });
-        if (!APPROVER) {
-            return 'USER_IS_NOT_APPROVER_OF_THIS_INVOICE';
+        if (USER.role.id !== ADMIN_ROLE) {
+            const APPROVER = await this.approverRepository.getApprover({
+                user_id,
+                invoice_id
+            });
+            if (!APPROVER) {
+                return 'USER_IS_NOT_APPROVER_OF_THIS_INVOICE';
+            }
+            // Proccess invoice
+            const COUNT_APPROVERS = await this.approverUseCase.getByInvoice(invoice_id);
+            if (!COUNT_APPROVERS) {
+                return "INVOICE_DOES_NOT_HAVE_APPROVERS";
+            }
         }
         await this.updateInvoice({
             id: invoice_id,
             inv_managed_at: now(),
-            inv_managed_by: user_id
-        });
-        // Proccess invoice
-        const COUNT_APPROVERS = await this.approverUseCase.getByInvoice(invoice_id);
-        if (!COUNT_APPROVERS) {
-            return "INVOICE_DOES_NOT_HAVE_APPROVERS";
-        }
-        await this.updateInvoice({
-            id: invoice_id,
+            inv_managed_by: user_id,
             state_id: REJECTED_STATE
         });
-        await this.noteUseCase.registerNote({ invoice_id, user_id, not_description: 'Factura rechazada', not_type: 'MANAGMENT' });
+        await this.noteUseCase.registerNote({
+            invoice_id,
+            user_id,
+            not_description: 'Factura rechazada',
+            not_type: 'MANAGMENT'
+        });
         return "INVOICE_REJECTED";
     }
 }
