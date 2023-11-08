@@ -23,7 +23,7 @@ export class MySqlUserRepository implements UserRepository {
     
     async registerUser(userMock: any): Promise<any> {
         let { use_microsoft_id } = userMock;
-        const CHECK_USER = this.listUserById(use_microsoft_id);
+        const CHECK_USER = await this.listUserById(use_microsoft_id);
         if (!CHECK_USER) {
             const USER = await User.create(userMock);
             return USER;

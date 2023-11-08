@@ -11,4 +11,5 @@ export interface InvoiceRepository {
     addApprovers({ id, approvers }: { id: string, approvers: string[] }): Promise<string | null>;
     addNote(note: NoteEntity): Promise<string | null>;
     approveInvoice(approver: ApproverEntity): Promise<string | null>;
+    rejectInvoice(approver: ApproverEntity): Promise<string | null>;
 }

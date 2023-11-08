@@ -41,16 +41,22 @@ ROUTER.get("/:page?:size?",
     invoiceController.getController
 );
 
+ROUTER.put("/approvers/add", 
+    authMiddleware, 
+    validatorAddApprovers,
+    invoiceController.addApproverController
+);
+
 ROUTER.put("/approvers/approve", 
     authMiddleware, 
     validatorApproveInvoice,
     invoiceController.aproveController
 );
 
-ROUTER.put("/approvers/add", 
+ROUTER.put("/approvers/reject", 
     authMiddleware, 
-    validatorAddApprovers,
-    invoiceController.addApproverController
+    validatorApproveInvoice,
+    invoiceController.rejectController
 );
 
 ROUTER.put("/notes/add", 

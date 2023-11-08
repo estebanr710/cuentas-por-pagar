@@ -86,4 +86,18 @@ export class InvoiceController {
             res.status(500).send(`Error: ${e}`);
         }
     }
+
+    public rejectController = async (req: Request, res: Response) => {
+        try {
+            let { invoice_id, user_id } = matchedData(req);
+            const REJECT = await this.invoiceUseCase.rejectInvoice({ invoice_id, user_id });
+            if (REJECT !== "INVOICE_REJECTED") {
+                res.status(403).send({ status: 403, message: REJECT });
+            } else {
+                res.send({ status: 200, message: "INVOICE_HAS_BEEN_SUCCESSFULLY_REJECTED" });
+            }
+        } catch (e) {
+            res.status(500).send(`Error: ${e}`);
+        }
+    }
 }

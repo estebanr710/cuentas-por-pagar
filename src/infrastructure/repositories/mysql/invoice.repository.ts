@@ -24,7 +24,8 @@ import { NoteEntity } from "../../../domain/note/note.entity";
 import { ApproverEntity } from "../../../domain/approver/approver.entity";
 import now from "../../handlers/handle.now";
 
-const APPROVED_STATE: string = process.env.APPROVED_STATE_ID ?? '__defalult__'
+const APPROVED_STATE: string = process.env.APPROVED_STATE_ID ?? '__defalult__';
+const REJECTED_STATE: string = process.env.REJECTED_STATE_ID ?? '__defalult__';
 
 export class MySqlInvoiceRepository implements InvoiceRepository {
 
@@ -247,7 +248,11 @@ export class MySqlInvoiceRepository implements InvoiceRepository {
             invoice_id,
             app_state: true
         });
-        await this.updateInvoice({ id: invoice_id, inv_managed_at: now(), inv_managed_by: user_id });
+        await this.updateInvoice({
+            id: invoice_id,
+            inv_managed_at: now(),
+            inv_managed_by: user_id
+        });
         // Proccess invoice
         const COUNT_APPROVERS = await this.approverUseCase.getByInvoice(invoice_id);
         if (!COUNT_APPROVERS) {
@@ -261,9 +266,42 @@ export class MySqlInvoiceRepository implements InvoiceRepository {
             }
         }
         if (TOTAL === count) {
-            await this.updateInvoice({ id: invoice_id, state_id: APPROVED_STATE });
+            await this.updateInvoice({
+                id: invoice_id,
+                state_id: APPROVED_STATE
+            });
         }
         await this.noteUseCase.registerNote({ invoice_id, user_id, not_description: 'Factura aprobada', not_type: 'MANAGMENT' });
         return "INVOICE_APPROVED";
+    }
+
+    async rejectInvoice(approver: ApproverEntity): Promise<any> {
+        let { user_id, invoice_id } = approver;
+        if (!await this.findInvoiceById(invoice_id)) {
+            return 'INVOICE_NOT_FOUND';
+        }
+        if (!await this.mysqlUserRepository.listUserByIdV2(user_id)) {
+            return 'USER_NOT_FOUND';
+        }
+        const APPROVER = await this.approverRepository.getApprovers({ user_id, invoice_id });
+        if (!APPROVER) {
+            return 'USER_IS_NOT_APPROVER_OF_THIS_INVOICE';
+        }
+        await this.updateInvoice({
+            id: invoice_id,
+            inv_managed_at: now(),
+            inv_managed_by: user_id
+        });
+        // Proccess invoice
+        const COUNT_APPROVERS = await this.approverUseCase.getByInvoice(invoice_id);
+        if (!COUNT_APPROVERS) {
+            return "INVOICE_DOES_NOT_HAVE_APPROVERS";
+        }
+        await this.updateInvoice({
+            id: invoice_id,
+            state_id: REJECTED_STATE
+        });
+        await this.noteUseCase.registerNote({ invoice_id, user_id, not_description: 'Factura rechazada', not_type: 'MANAGMENT' });
+        return "INVOICE_REJECTED";
     }
 }

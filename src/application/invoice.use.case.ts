@@ -46,4 +46,9 @@ export class InvoiceUseCase {
         const APPROVE = await this.invoiceRepository.approveInvoice(approver);
         return APPROVE;
     }
+
+    public rejectInvoice = async (approver: ApproverEntity) => {
+        const REJECT = await this.invoiceRepository.rejectInvoice(approver);
+        return REJECT;
+    }
 }
