@@ -12,4 +12,5 @@ export interface InvoiceRepository {
     addNote(note: NoteEntity): Promise<string | null>;
     approveInvoice(approver: ApproverEntity): Promise<string | null>;
     rejectInvoice(approver: ApproverEntity): Promise<string | null>;
+    returnInvoice(approver: ApproverEntity): Promise<string | null>;
 }

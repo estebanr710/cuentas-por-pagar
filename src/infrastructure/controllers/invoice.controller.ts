@@ -104,4 +104,18 @@ export class InvoiceController {
             res.status(500).send(`Error: ${e}`);
         }
     }
+
+    public returnController = async (req: Request, res: Response) => {
+        try {
+            let { invoice_id, user_id } = matchedData(req);
+            const RETURN = await this.invoiceUseCase.returnInvoice({ invoice_id, user_id });
+            if (RETURN !== "INVOICE_RETURNED") {
+                res.status(403).send({ status: 403, message: RETURN });
+            } else {
+                res.send({ status: 200, message: "INVOICE_HAS_BEEN_SUCCESSFULLY_RETURNED" });
+            }
+        } catch (e) {
+            res.status(500).send(`Error: ${e}`);
+        }
+    }
 }

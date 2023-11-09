@@ -27,6 +27,7 @@ import now from "../../handlers/handle.now";
 const APPROVED_STATE: string = process.env.APPROVED_STATE_ID ?? '__defalult__';
 const REJECTED_STATE: string = process.env.REJECTED_STATE_ID ?? '__defalult__';
 const IN_PROCESS_STATE: string = process.env.IN_PROCESS_STATE_ID ?? '__defalult__';
+const RETURNED_STATE: string = process.env.RETURNED_STATE_ID ?? '__defalult__';
 
 const ADMIN_ROLE: string = process.env.ADMIN_ROLE_ID ?? '__defalult__';
 
@@ -391,5 +392,48 @@ export class MySqlInvoiceRepository implements InvoiceRepository {
             not_type: 'MANAGMENT'
         });
         return "INVOICE_REJECTED";
+    }
+
+    async returnInvoice(approver: ApproverEntity): Promise<any> {
+        let { user_id, invoice_id } = approver;
+        if (!await this.findInvoiceById(invoice_id)) {
+            return 'INVOICE_NOT_FOUND';
+        }
+        if (!await this.mysqlUserRepository.listUserByIdV2(user_id)) {
+            return 'USER_NOT_FOUND';
+        }
+        // Proccess invoice
+        const COUNT_APPROVERS = await this.approverUseCase.getByInvoice(invoice_id);
+        if (!COUNT_APPROVERS) {
+            return "INVOICE_DOES_NOT_HAVE_APPROVERS";
+        }
+        const APPROVER = await this.approverRepository.getApprover({
+            user_id,
+            invoice_id
+        });
+        if (!APPROVER) {
+            return 'USER_IS_NOT_APPROVER_OF_THIS_INVOICE';
+        }
+        await this.approverUseCase.deleteApprover(APPROVER.id);
+        await this.updateInvoice({
+            id: invoice_id,
+            inv_managed_at: now(),
+            inv_managed_by: user_id
+        });
+        await this.noteUseCase.registerNote({
+            invoice_id,
+            user_id,
+            not_description: 'Factura retornada',
+            not_type: 'MANAGMENT'
+        });
+        // Get approvers by second time
+        const COUNT_APPROVERS_2 = await this.approverUseCase.getByInvoice(invoice_id);
+        if (COUNT_APPROVERS_2.count === 0) {
+            await this.updateInvoice({
+                id: invoice_id,
+                state_id: RETURNED_STATE
+            });
+        }
+        return "INVOICE_RETURNED";
     }
 }

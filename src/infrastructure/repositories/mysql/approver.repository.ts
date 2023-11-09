@@ -44,4 +44,13 @@ export class MySqlApproverRepository implements ApproverRepository {
         const APROVER = await Approver.findOne({ where: { invoice_id, user_id } });
         return APROVER;
     }
+
+    async deleteApprover(id: string): Promise<string | null> {
+        const APPROVER = await Approver.findByPk(id);
+        if (!APPROVER) {
+            return "APPROVER_NOT_EXISTS";
+        }
+        await Approver.destroy({ where: { id } });
+        return "APPROVER_DELETED";
+    }
 }

@@ -59,6 +59,12 @@ ROUTER.put("/approvers/reject",
     invoiceController.rejectController
 );
 
+ROUTER.put("/approvers/return", 
+    authMiddleware, 
+    validatorApproveInvoice,
+    invoiceController.returnController
+);
+
 ROUTER.put("/notes/add", 
     authMiddleware, 
     validatorAddNote,

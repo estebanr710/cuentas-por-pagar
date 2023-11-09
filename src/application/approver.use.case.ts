@@ -21,4 +21,9 @@ export class ApproverUseCase {
         const APPROVERS = await this.approverRepository.getByInvoice(id);
         return APPROVERS;
     }
+
+    public deleteApprover = async (id: string) => {
+        const DELETED = await this.approverRepository.deleteApprover(id);
+        return DELETED;
+    }
 }
