@@ -118,4 +118,18 @@ export class InvoiceController {
             res.status(500).send(`Error: ${e}`);
         }
     }
+
+    public cancelController = async (req: Request, res: Response) => {
+        try {
+            let { invoice_id, user_id, observation } = matchedData(req);
+            const CANCEL = await this.invoiceUseCase.cancelInvoice({ invoice_id, user_id, observation });
+            if (CANCEL !== "INVOICE_CANCELED") {
+                res.status(403).send({ status: 403, message: CANCEL });
+            } else {
+                res.send({ status: 200, message: "INVOICE_HAS_BEEN_SUCCESSFULLY_CANCELED" });
+            }
+        } catch (e) {
+            res.status(500).send(`Error: ${e}`);
+        }
+    }
 }

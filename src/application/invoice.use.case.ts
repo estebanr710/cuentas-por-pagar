@@ -60,4 +60,9 @@ export class InvoiceUseCase {
         const RETURN = await this.invoiceRepository.returnInvoice(approver);
         return RETURN;
     }
+
+    public cancelInvoice = async (approver: ApproverActions) => {
+        const CANCEL = await this.invoiceRepository.cancelInvoice(approver);
+        return CANCEL;
+    }
 }

@@ -13,4 +13,5 @@ export interface InvoiceRepository {
     approveInvoice(approver: ApproverActions): Promise<string | null>;
     rejectInvoice(approver: ApproverActions): Promise<string | null>;
     returnInvoice(approver: ApproverActions): Promise<string | null>;
+    cancelInvoice(approver: ApproverActions): Promise<string | null>;
 }

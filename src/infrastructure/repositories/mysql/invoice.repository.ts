@@ -28,6 +28,7 @@ const APPROVED_STATE: string = process.env.APPROVED_STATE_ID ?? '__defalult__';
 const REJECTED_STATE: string = process.env.REJECTED_STATE_ID ?? '__defalult__';
 const IN_PROCESS_STATE: string = process.env.IN_PROCESS_STATE_ID ?? '__defalult__';
 const RETURNED_STATE: string = process.env.RETURNED_STATE_ID ?? '__defalult__';
+const CANCELED_STATE: string = process.env.CANCELLED_STATE_ID ?? '__defalult__';
 
 const ADMIN_ROLE: string = process.env.ADMIN_ROLE_ID ?? '__defalult__';
 
@@ -442,5 +443,33 @@ export class MySqlInvoiceRepository implements InvoiceRepository {
             });
         }
         return "INVOICE_RETURNED";
+    }
+
+    async cancelInvoice(approver: ApproverActions): Promise<any> {
+        let { user_id, invoice_id, observation } = approver;
+        if (!await this.findInvoiceById(invoice_id)) {
+            return 'INVOICE_NOT_FOUND';
+        }
+        const USER = await this.mysqlUserRepository.listUserByIdV2(user_id);
+        if (!USER) {
+            return 'USER_NOT_FOUND';
+        }
+        if (USER.role.id !== ADMIN_ROLE) {
+            return "USER_IS_NOT_ADMIN";
+        } else {
+            await this.updateInvoice({
+                id: invoice_id,
+                inv_managed_at: now(),
+                inv_managed_by: user_id,
+                state_id: CANCELED_STATE
+            });
+            await this.noteUseCase.registerNote({
+                invoice_id,
+                user_id,
+                not_description: `Factura anulada:\r\n${observation}`,
+                not_type: 'MANAGMENT'
+            });
+            return "INVOICE_CANCELED";
+        }
     }
 }

@@ -66,6 +66,12 @@ ROUTER.put("/approvers/return",
     invoiceController.returnController
 );
 
+ROUTER.put("/cancel", 
+    authMiddleware, 
+    validatorApproverActions,
+    invoiceController.cancelController
+);
+
 ROUTER.put("/notes/add", 
     authMiddleware, 
     validatorAddNote,
