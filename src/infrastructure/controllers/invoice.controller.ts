@@ -166,12 +166,12 @@ export class InvoiceController {
                 return `USER_NOT_FOUND`;
             }
             if (
-                typeof inv_title === undefined &&
-                typeof provider_id === undefined &&
-                typeof state_id === undefined &&
-                typeof inv_cp_simi === undefined &&
-                typeof inv_simi_state === undefined &&
-                typeof inv_amount === undefined
+                !inv_title &&
+                !provider_id &&
+                !state_id &&
+                !inv_cp_simi &&
+                !inv_simi_state &&
+                !inv_amount
             ) {
                 res.status(403).send({ status: 403, message: 'NO_DATA' });
             } else {
