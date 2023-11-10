@@ -1,26 +1,27 @@
+import { ApproverEntity } from "../../domain/approver/approver.entity";
 import Invoice from "../models/local.invoices.schema";
 
 export interface InvoicesPaginated {
-    invoices: Invoice[],
-    totalItems: number,
-    totalPages: number,
-    firstPage: number,
-    lastPage: number,
-    previousPage: number | null,
-    currentPage: number,
-    nextPage: number | null
+    invoices: Invoice[];
+    totalItems: number;
+    totalPages: number;
+    firstPage: number;
+    lastPage: number;
+    previousPage: number | null;
+    currentPage: number;
+    nextPage: number | null;
 }
 
 export interface FindInvoicesMock {
-    page: number,
-    size: number,
-    limit: number,
-    offset: number
+    page: number;
+    size: number;
+    limit: number;
+    offset: number;
 }
 
 export interface Pagination {
-    limit: number,
-    offset: number 
+    limit: number;
+    offset: number;
 }
 
 export interface CustomInvoice {
@@ -42,7 +43,12 @@ export interface CustomInvoice {
 }
 
 export interface AddApprovers {
-    id: string,
-    user_id: string,
+    id: string;
+    user_id: string;
     approvers: string[]
+}
+
+export interface ApproverActions extends ApproverEntity {
+    observation: string;
+    inv_amount?: number;
 }

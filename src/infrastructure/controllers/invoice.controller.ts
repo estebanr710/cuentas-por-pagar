@@ -79,8 +79,8 @@ export class InvoiceController {
     
     public aproveController = async (req: Request, res: Response) => {
         try {
-            let { invoice_id, user_id } = matchedData(req);
-            const APPROVE = await this.invoiceUseCase.approveInvoice({ invoice_id, user_id });
+            let { invoice_id, user_id, observation, inv_amount } = matchedData(req);
+            const APPROVE = await this.invoiceUseCase.approveInvoice({ invoice_id, user_id, observation, inv_amount });
             if (APPROVE !== "INVOICE_APPROVED") {
                 res.status(403).send({ status: 403, message: APPROVE });
             } else {
@@ -93,8 +93,8 @@ export class InvoiceController {
 
     public rejectController = async (req: Request, res: Response) => {
         try {
-            let { invoice_id, user_id } = matchedData(req);
-            const REJECT = await this.invoiceUseCase.rejectInvoice({ invoice_id, user_id });
+            let { invoice_id, user_id, observation } = matchedData(req);
+            const REJECT = await this.invoiceUseCase.rejectInvoice({ invoice_id, user_id, observation });
             if (REJECT !== "INVOICE_REJECTED") {
                 res.status(403).send({ status: 403, message: REJECT });
             } else {
@@ -107,8 +107,8 @@ export class InvoiceController {
 
     public returnController = async (req: Request, res: Response) => {
         try {
-            let { invoice_id, user_id } = matchedData(req);
-            const RETURN = await this.invoiceUseCase.returnInvoice({ invoice_id, user_id });
+            let { invoice_id, user_id, observation } = matchedData(req);
+            const RETURN = await this.invoiceUseCase.returnInvoice({ invoice_id, user_id, observation });
             if (RETURN !== "INVOICE_RETURNED") {
                 res.status(403).send({ status: 403, message: RETURN });
             } else {

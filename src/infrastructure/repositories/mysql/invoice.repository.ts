@@ -5,7 +5,7 @@ import { MySqlUserRepository } from "./user.repository";
 import { MySqlNoteRepository } from "./note.repository";
 import { MySqlApproverRepository } from "./approver.repository";
 
-import { AddApprovers, CustomInvoice, FindInvoicesMock } from "../../interfaces/main";
+import { AddApprovers, ApproverActions, CustomInvoice, FindInvoicesMock } from "../../interfaces/main";
 import { getPagingData } from "../../handlers/handle.pagination";
 
 import Invoice from "../../models/local.invoices.schema";
@@ -248,8 +248,8 @@ export class MySqlInvoiceRepository implements InvoiceRepository {
         return "NOTE_ADDED";
     }
 
-    async approveInvoice(approver: ApproverEntity): Promise<any> {
-        let { user_id, invoice_id } = approver;
+    async approveInvoice(approver: ApproverActions): Promise<any> {
+        let { user_id, invoice_id, observation, inv_amount } = approver;
         if (!await this.findInvoiceById(invoice_id)) {
             return 'INVOICE_NOT_FOUND';
         }
@@ -273,7 +273,8 @@ export class MySqlInvoiceRepository implements InvoiceRepository {
                     id: invoice_id,
                     inv_managed_at: now(),
                     inv_managed_by: user_id,
-                    state_id: APPROVED_STATE
+                    state_id: APPROVED_STATE,
+                    inv_amount
                 });
             } else {
                 // If the admin user is approver of the invoice
@@ -282,7 +283,8 @@ export class MySqlInvoiceRepository implements InvoiceRepository {
                     await this.updateInvoice({
                         id: invoice_id,
                         inv_managed_at: now(),
-                        inv_managed_by: user_id
+                        inv_managed_by: user_id,
+                        inv_amount
                     });
                     // Update approver
                     await this.approverUseCase.updateApprover({
@@ -290,9 +292,11 @@ export class MySqlInvoiceRepository implements InvoiceRepository {
                         invoice_id,
                         app_state: true
                     });
-                    const TOTAL: number = COUNT_APPROVERS.count;
+                    // Get all the approvers of the invoice
+                    const COUNT_APPROVERS_3 = await this.approverUseCase.getByInvoice(invoice_id);
+                    const TOTAL: number = COUNT_APPROVERS_3.count;
                     let count: number = 0;
-                    for (const e of COUNT_APPROVERS.rows) {
+                    for (const e of COUNT_APPROVERS_3.rows) {
                         if (e.app_state === true) {
                             count++;
                         }
@@ -328,11 +332,14 @@ export class MySqlInvoiceRepository implements InvoiceRepository {
             await this.updateInvoice({
                 id: invoice_id,
                 inv_managed_at: now(),
-                inv_managed_by: user_id
+                inv_managed_by: user_id,
+                inv_amount
             });
-            const TOTAL: number = COUNT_APPROVERS.count;
+            // Get all the approvers of the invoice
+            const COUNT_APPROVERS_2 = await this.approverUseCase.getByInvoice(invoice_id);
+            const TOTAL: number = COUNT_APPROVERS_2.count;
             let count: number = 0;
-            for (const e of COUNT_APPROVERS.rows) {
+            for (const e of COUNT_APPROVERS_2.rows) {
                 if (e.app_state === true) {
                     count++;
                 }
@@ -350,14 +357,14 @@ export class MySqlInvoiceRepository implements InvoiceRepository {
         await this.noteUseCase.registerNote({
             invoice_id,
             user_id,
-            not_description: 'Factura aprobada',
+            not_description: `Factura aprobada:\r\n${observation}`,
             not_type: 'MANAGMENT'
         });
         return "INVOICE_APPROVED";
     }
 
-    async rejectInvoice(approver: ApproverEntity): Promise<any> {
-        let { user_id, invoice_id } = approver;
+    async rejectInvoice(approver: ApproverActions): Promise<any> {
+        let { user_id, invoice_id, observation } = approver;
         if (!await this.findInvoiceById(invoice_id)) {
             return 'INVOICE_NOT_FOUND';
         }
@@ -388,14 +395,14 @@ export class MySqlInvoiceRepository implements InvoiceRepository {
         await this.noteUseCase.registerNote({
             invoice_id,
             user_id,
-            not_description: 'Factura rechazada',
+            not_description: `Factura rechazada:\r\n${observation}`,
             not_type: 'MANAGMENT'
         });
         return "INVOICE_REJECTED";
     }
 
-    async returnInvoice(approver: ApproverEntity): Promise<any> {
-        let { user_id, invoice_id } = approver;
+    async returnInvoice(approver: ApproverActions): Promise<any> {
+        let { user_id, invoice_id, observation } = approver;
         if (!await this.findInvoiceById(invoice_id)) {
             return 'INVOICE_NOT_FOUND';
         }
@@ -423,7 +430,7 @@ export class MySqlInvoiceRepository implements InvoiceRepository {
         await this.noteUseCase.registerNote({
             invoice_id,
             user_id,
-            not_description: 'Factura retornada',
+            not_description: `Factura retornada:\r\n${observation}`,
             not_type: 'MANAGMENT'
         });
         // Get approvers by second time
