@@ -1,7 +1,7 @@
 import { InvoiceRepository } from "../domain/invoice/invoice.repository"; 
 import { InvoiceValue } from "../domain/invoice/invoice.value";
 import { InvoiceEntity } from "../domain/invoice/invoice.entity";
-import { AddApprovers, ApproverActions, FindInvoicesMock } from "../infrastructure/interfaces/main";
+import { AddApprovers, ApproverActions, CustomInvoice, FindInvoicesMock } from "../infrastructure/interfaces/main";
 import { NoteEntity } from "../domain/note/note.entity";
 import { ApproverEntity } from "../domain/approver/approver.entity";
 
@@ -64,5 +64,10 @@ export class InvoiceUseCase {
     public cancelInvoice = async (approver: ApproverActions) => {
         const CANCEL = await this.invoiceRepository.cancelInvoice(approver);
         return CANCEL;
+    }
+
+    public updateInvoice = async (invoice: CustomInvoice) => {
+        const UPDATE = await this.invoiceRepository.updateInvoice(invoice);
+        return UPDATE;
     }
 }

@@ -15,7 +15,8 @@ import {
     validatorAddApprovers,
     validatorAddNote,
     validatorApproveInvoice,
-    validatorApproverActions
+    validatorApproverActions,
+    validatorUpdateInvoice
 } from "../validators/invoice.validator";
 
 const ROUTER = Router();
@@ -76,6 +77,12 @@ ROUTER.put("/notes/add",
     authMiddleware, 
     validatorAddNote,
     invoiceController.addNoteController
+);
+
+ROUTER.put("/", 
+    authMiddleware, 
+    validatorUpdateInvoice,
+    invoiceController.updateController
 );
 
 export { ROUTER };

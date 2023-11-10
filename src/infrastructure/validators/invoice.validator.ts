@@ -64,6 +64,20 @@ const validatorApproverActions = [
     }
 ];
 
+const validatorUpdateInvoice = [
+    check("id", "Invalid id [min_length: 5, max_length: 50]").exists().notEmpty().isLength({ min: 5, max: 50 }),
+    check("inv_title", "Invalid inv_title [min_length: 5, max_length: 200]").optional().notEmpty().isLength({ min: 5, max: 200 }),
+    check("provider_id", "Invalid provider_id [min_length: 5, max_length: 50]").optional().notEmpty().isLength({ min: 5, max: 50 }),
+    check("state_id", "Invalid state_id [min_length: 5, max_length: 50]").optional().notEmpty().isLength({ min: 5, max: 50 }),
+    check("inv_cp_simi", "Invalid inv_cp_simi [min_length: 1, max_length: 20]").optional().notEmpty().isLength({ min: 1, max: 20 }),
+    check("inv_simi_state", "Invalid inv_simi_state [isBoolean]").optional().notEmpty().isBoolean(),
+    check("inv_amount", "Invalid inv_amount [isNumeric , min: 1]").optional().notEmpty().isInt({ min: 1 }),
+    check("user_id", "Invalid user_id [min_length: 5, max_length: 50]").exists().notEmpty().isLength({ min: 5, max: 50 }),
+    (req: Request, res: Response, next: NextFunction) => {
+        return validateResults(req, res, next);
+    }
+];
+
 export {
     validatorCreateInvoice,
     validatorGetInvoices,
@@ -71,5 +85,6 @@ export {
     validatorAddApprovers,
     validatorAddNote,
     validatorApproveInvoice,
-    validatorApproverActions
+    validatorApproverActions,
+    validatorUpdateInvoice
 };

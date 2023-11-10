@@ -1,11 +1,25 @@
 import { Request, Response } from "express";
-import { InvoiceUseCase } from "../../application/invoice.use.case"; 
 import { matchedData } from "express-validator";
+
 import { getPagination } from "../handlers/handle.pagination";
+import now from "../handlers/handle.now";
+
+import { MySqlNoteRepository } from "../repositories/mysql/note.repository";
+import { NoteUseCase } from "../../application/note.use.case";
+import { InvoiceUseCase } from "../../application/invoice.use.case"; 
+
+import { MySqlUserRepository } from "../repositories/mysql/user.repository";
 
 export class InvoiceController {
 
-    constructor(private invoiceUseCase: InvoiceUseCase) {}
+    constructor(
+        private invoiceUseCase: InvoiceUseCase,
+        //Note
+        private noteRepository = new MySqlNoteRepository(),
+        private noteUseCase = new NoteUseCase(noteRepository),
+
+        private mysqlUserRepository = new MySqlUserRepository
+    ) {}
 
     public insertController = async (req: Request, res: Response) => {
         try {
@@ -132,4 +146,106 @@ export class InvoiceController {
             res.status(500).send(`Error: ${e}`);
         }
     }
+    
+    public updateController = async (req: Request, res: Response) => {
+        try {
+            let {
+                id,
+                inv_title,
+                provider_id,
+                state_id,
+                inv_cp_simi,
+                inv_simi_state,
+                inv_amount,
+                user_id
+            } = matchedData(req);
+            if (!await this.invoiceUseCase.getInvoice(id)) {
+                return 'INVOICE_NOT_FOUND';
+            }
+            if (!await this.mysqlUserRepository.listUserByIdV2(user_id)) {
+                return `USER_NOT_FOUND`;
+            }
+            if (
+                typeof inv_title === undefined &&
+                typeof provider_id === undefined &&
+                typeof state_id === undefined &&
+                typeof inv_cp_simi === undefined &&
+                typeof inv_simi_state === undefined &&
+                typeof inv_amount === undefined
+            ) {
+                res.status(403).send({ status: 403, message: 'NO_DATA' });
+            } else {
+                const INVOICE: any = await this.invoiceUseCase.getInvoice(id);
+                await this.invoiceUseCase.updateInvoice({
+                    id,
+                    inv_title,
+                    provider_id,
+                    state_id,
+                    inv_cp_simi,
+                    inv_simi_state,
+                    inv_amount
+                });
+                const INVOICE_2: any = await this.invoiceUseCase.getInvoice(id);
+                // Edition fields values
+                let fieldName: string = '__default__';
+                let previousValue: any;
+                let currentValue: any;
+                if (inv_title) {
+                    fieldName = 'ASUNTO';
+                    previousValue = INVOICE.inv_title;
+                    currentValue = inv_title;
+                }
+                if (provider_id) {
+                    fieldName = 'PROVEEDOR';
+                    previousValue = INVOICE.provider.pro_name ? INVOICE.provider.pro_name : '---';
+                    currentValue = INVOICE_2.provider.pro_name;
+                }
+                if (inv_cp_simi) {
+                    fieldName = 'CP SIMI';
+                    previousValue = INVOICE.inv_cp_simi ? INVOICE.inv_cp_simi : '---';
+                    currentValue = inv_cp_simi;
+                }
+                if (inv_simi_state) {
+                    fieldName = 'ESTADO SIMI';
+                    previousValue = INVOICE.inv_simi_state ? 'CONTABILIZADO' : 'NO CONTABILIZADO';
+                    currentValue = inv_simi_state ? 'CONTABILIZADO' : 'NO CONTABILIZADO';
+                }
+                if (inv_amount) {
+                    fieldName = 'VALOR';
+                    previousValue = INVOICE.inv_amount ? INVOICE.inv_amount : '---';
+                    currentValue = inv_amount;
+                }
+                // ./Edition fields values
+                if (state_id) {
+                    await this.noteUseCase.registerNote({
+                        invoice_id: id,
+                        user_id,
+                        not_description: `Estado actualizado por: ${INVOICE_2.state.sta_description}`,
+                        not_type: 'MANAGMENT'
+                    });
+                    await this.invoiceUseCase.updateInvoice({
+                        id,
+                        inv_managed_at: now(),
+                        inv_managed_by: user_id,
+                    });
+                } else {
+                    await this.noteUseCase.registerNote({
+                        invoice_id: id,
+                        user_id,
+                        not_description: `El campo ${fieldName} ha sido actualizado:\r\nValor anterior: ${previousValue}\r\nValor actual: ${currentValue}`,
+                        not_type: 'EDITION'
+                    });
+                    await this.invoiceUseCase.updateInvoice({
+                        id,
+                        inv_modified_at: now(),
+                        inv_modified_by: user_id,
+                    });
+                }
+                res.send({ status: 200, message: "INVOICE_HAS_BEEN_SUCCESSFULLY_UPDATED" });
+            }
+        } catch (e) {
+            res.status(500).send(`Error: ${e}`);
+        }
+    }
+    
 }
