@@ -247,5 +247,4 @@ export class InvoiceController {
             res.status(500).send(`Error: ${e}`);
         }
     }
-    
 }
