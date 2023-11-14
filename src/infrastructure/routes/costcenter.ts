@@ -8,7 +8,7 @@ import { CostCenterUseCase } from "../../application/costcenter.use.case";
 import { CostCenterController } from "../controllers/costcenter.controller"; 
 
 import authMiddleware from "../middlewares/jwt.middleware";
-import { validatorCreateCostCenter } from "../validators/costcenter.validator";
+import { validatorCreateCostCenter, validatorUpdateCostCenter } from "../validators/costcenter.validator";
 
 const ROUTER = Router();
 
@@ -20,6 +20,17 @@ ROUTER.post("/",
     authMiddleware,
     validatorCreateCostCenter,
     costCenterController.insertController
+);
+
+ROUTER.put("/",
+    authMiddleware,
+    validatorUpdateCostCenter,
+    costCenterController.updateController
+);
+
+ROUTER.get("/",
+    authMiddleware,
+    costCenterController.getController
 );
 
 export { ROUTER };
