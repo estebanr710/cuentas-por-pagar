@@ -17,7 +17,7 @@ export class ReportController {
             worksheet.addRow(['María', 30]);
             worksheet.addRow(['Pedro', 22]);
 
-            const TEMP_PATH: string = `${__dirname}/../temp`;
+            const TEMP_PATH = `${__dirname}/../temp`;
 
             const filePath = `${TEMP_PATH}/ejemplo.xlsx`;
             await workbook.xlsx.writeFile(filePath);
