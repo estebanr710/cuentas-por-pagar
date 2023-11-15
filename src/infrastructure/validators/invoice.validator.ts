@@ -21,7 +21,7 @@ const validatorGetInvoices = [
 ];
 
 const validatorGetInvoice = [
-    check("id", "Invalid id [ min: 5, max: 50 ]").isLength({ min: 5, max: 50 }).exists().notEmpty(),
+    check("id", "Invalid id [ min: 1 ]").isInt({ min: 1 }).exists().notEmpty(),
     (req: Request, res: Response, next: NextFunction) => {
         return validateResults(req, res, next);
     }
