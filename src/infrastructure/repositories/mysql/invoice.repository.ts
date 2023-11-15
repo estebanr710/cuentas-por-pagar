@@ -178,7 +178,42 @@ export class MySqlInvoiceRepository implements InvoiceRepository {
         if (PROVIDER !== null) {
             invoiceMock.provider_id = PROVIDER.id;
         }
-        const INVOICE = await Invoice.create(invoiceMock);
+        const CREATE: any = await Invoice.create(invoiceMock);
+        const INVOICE = await Invoice.findByPk(CREATE.id, {
+            attributes: {
+                exclude: [
+                    "state_id",
+                    "provider_id",
+                    "inv_email_body",
+                    "inv_modified_by",
+                    "inv_managed_by"
+                ] 
+            },
+            include: [
+                {
+                    model: State
+                },
+                {
+                    model: Provider
+                },
+                {
+                    model: User,
+                    as: "modifier",
+                    attributes: [
+                        "id",
+                        "use_name"
+                    ]
+                },
+                {
+                    model: User,
+                    as: "manager",
+                    attributes: [
+                        "id",
+                        "use_name"
+                    ]
+                }
+            ]
+        });
         return INVOICE;
     }
     
