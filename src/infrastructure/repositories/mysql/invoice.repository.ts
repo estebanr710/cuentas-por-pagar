@@ -167,7 +167,7 @@ export class MySqlInvoiceRepository implements InvoiceRepository {
                     }
                 }
             ],
-            where: { inv_referencia: id }
+            where: { inv_reference: id }
         });
         return INVOICE;
     }
