@@ -36,6 +36,15 @@ const validatorAddApprovers = [
     }
 ];
 
+const validatorAddCostCenter = [
+    check("id", "Invalid id [ min: 5, max: 50 ]").isLength({ min: 5, max: 50 }).exists().notEmpty(),
+    check("user_id", "Invalid user_id [ min: 5, max: 50 ]").isLength({ min: 5, max: 50 }).exists().notEmpty(),
+    check("costcenter", "Invalid costcenter [ isArray, min: 1 ]").isArray({ min: 1 }).exists().notEmpty(),
+    (req: Request, res: Response, next: NextFunction) => {
+        return validateResults(req, res, next);
+    }
+];
+
 const validatorAddNote = [
     check("invoice_id", "Invalid invoice_id [min_length: 5, max_length: 50]").exists().notEmpty().isLength({ min: 5, max: 50 }),
     check("user_id", "Invalid user_id [min_length: 5, max_length: 50]").exists().notEmpty().isLength({ min: 5, max: 50 }),
@@ -86,5 +95,6 @@ export {
     validatorAddNote,
     validatorApproveInvoice,
     validatorApproverActions,
-    validatorUpdateInvoice
+    validatorUpdateInvoice,
+    validatorAddCostCenter
 };

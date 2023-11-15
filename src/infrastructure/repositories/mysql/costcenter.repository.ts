@@ -15,7 +15,12 @@ export class MySqlCostCenterRepository implements CostCenterRepository {
     }
 
     async changeCostCenterState({ id, cos_cen_state }: { id: string; cos_cen_state: boolean; }): Promise<any> {
-        const COST_CENTER = await CostCenter.update({ cos_cen_state }, { where: { id } });
+        await CostCenter.update({ cos_cen_state }, { where: { id } });
         return "STATE_HAS_BEEN_CHANGED";
+    }
+
+    public async listCostCenterById(id: string): Promise<any> {
+        const COST_CENTER = await CostCenter.findByPk(id);
+        return COST_CENTER;
     }
 }

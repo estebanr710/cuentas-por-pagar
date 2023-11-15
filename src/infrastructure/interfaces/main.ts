@@ -48,6 +48,17 @@ export interface AddApprovers {
     approvers: string[]
 }
 
+export interface CustomCostCenter {
+    costcenter_id: string;
+    percentage: number
+}
+
+export interface AddCostCenter {
+    id: string;
+    user_id: string;
+    costcenter: CustomCostCenter[]
+}
+
 export interface ApproverActions extends ApproverEntity {
     observation: string;
     inv_amount?: number;

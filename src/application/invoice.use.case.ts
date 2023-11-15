@@ -1,7 +1,7 @@
 import { InvoiceRepository } from "../domain/invoice/invoice.repository"; 
 import { InvoiceValue } from "../domain/invoice/invoice.value";
 import { InvoiceEntity } from "../domain/invoice/invoice.entity";
-import { AddApprovers, ApproverActions, CustomInvoice, FindInvoicesMock } from "../infrastructure/interfaces/main";
+import { AddApprovers, AddCostCenter, ApproverActions, CustomInvoice, FindInvoicesMock } from "../infrastructure/interfaces/main";
 import { NoteEntity } from "../domain/note/note.entity";
 import { ApproverEntity } from "../domain/approver/approver.entity";
 
@@ -39,6 +39,15 @@ export class InvoiceUseCase {
             approvers
         });
         return APPROVERS;
+    }
+    
+    public addCostCenter = async ({ id, user_id, costcenter }: AddCostCenter) => {
+        const COST_CENTER = await this.invoiceRepository.addCostCenter({
+            id,
+            user_id,
+            costcenter
+        });
+        return COST_CENTER;
     }
 
     public addNote = async (note: NoteEntity) => {

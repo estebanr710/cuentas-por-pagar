@@ -77,6 +77,24 @@ export class InvoiceController {
         }
     }
 
+    public addCostCenterController = async (req: Request, res: Response) => {
+        try {
+            let { id, user_id, costcenter } = matchedData(req);
+            const APPROVERS = await this.invoiceUseCase.addCostCenter({
+                id,
+                user_id,
+                costcenter
+            });
+            if (APPROVERS !== "COST_CENTER_ADDED") {
+                res.status(403).send({ status: 403, message: APPROVERS });
+            } else {
+                res.send({ status: 200, message: "COST_CENTER_HAVE_BEEN_SUCCESSFULLY_ADDED" });
+            }
+        } catch (e) {
+            res.status(500).send(`Error: ${e}`);
+        }
+    }
+
     public addNoteController = async (req: Request, res: Response) => {
         try {
             let { invoice_id, user_id, not_description } = matchedData(req);

@@ -4,9 +4,11 @@ import { MySqlProviderRepository } from "./provider.repository";
 import { MySqlUserRepository } from "./user.repository";
 import { MySqlNoteRepository } from "./note.repository";
 import { MySqlApproverRepository } from "./approver.repository";
+import { MySqlIxCCRepository } from "./ixcc.repository";
 
-import { AddApprovers, ApproverActions, CustomInvoice, FindInvoicesMock } from "../../interfaces/main";
+import { AddApprovers, AddCostCenter, ApproverActions, CustomInvoice, FindInvoicesMock } from "../../interfaces/main";
 import { getPagingData } from "../../handlers/handle.pagination";
+import now from "../../handlers/handle.now";
 
 import Invoice from "../../models/local.invoices.schema";
 import State from "../../models/local.states.schema";
@@ -16,13 +18,15 @@ import Attachment from "../../models/local.attachments.schema";
 import Note from "../../models/local.notes.schema";
 import Role from "../../models/local.roles.schema";
 import Approver from "../../models/local.approvers.schema";
+import IxCC from "../../models/local.ixcc.schema";
+import CostCenter from "../../models/local.costcenter.schema";
 
 import { ApproverUseCase } from "../../../application/approver.use.case";
 import { NoteUseCase } from "../../../application/note.use.case";
+import { IxCCUseCase } from "../../../application/ixcc.use.case";
 
 import { NoteEntity } from "../../../domain/note/note.entity";
-import { ApproverEntity } from "../../../domain/approver/approver.entity";
-import now from "../../handlers/handle.now";
+import { MySqlCostCenterRepository } from "./costcenter.repository";
 
 const APPROVED_STATE: string = process.env.APPROVED_STATE_ID ?? '__defalult__';
 const REJECTED_STATE: string = process.env.REJECTED_STATE_ID ?? '__defalult__';
@@ -35,6 +39,9 @@ const ADMIN_ROLE: string = process.env.ADMIN_ROLE_ID ?? '__defalult__';
 export class MySqlInvoiceRepository implements InvoiceRepository {
 
     constructor (
+        //IxCC
+        private ixccRepository = new MySqlIxCCRepository(),
+        private ixccUseCase = new IxCCUseCase(ixccRepository),
         //Approver
         private approverRepository = new MySqlApproverRepository(),
         private approverUseCase = new ApproverUseCase(approverRepository),
@@ -43,7 +50,8 @@ export class MySqlInvoiceRepository implements InvoiceRepository {
         private noteUseCase = new NoteUseCase(noteRepository),
 
         private mysqlProviderRepository = new MySqlProviderRepository,
-        private mysqlUserRepository = new MySqlUserRepository
+        private mysqlUserRepository = new MySqlUserRepository,
+        private mysqlCostCenterRepository = new MySqlCostCenterRepository
     ) { }
 
     async findInvoiceById(id: string): Promise<any> {
@@ -136,6 +144,25 @@ export class MySqlInvoiceRepository implements InvoiceRepository {
                             "id",
                             "invoice_id",
                             "user_id"
+                        ]
+                    }
+                },
+                {
+                    model: IxCC,
+                    include: [
+                        {
+                            model: CostCenter,
+                            attributes: [
+                                "id",
+                                "cos_cen_description"
+                            ]
+                        }
+                    ],
+                    attributes: {
+                        exclude: [
+                            "id",
+                            "invoice_id",
+                            "costcenter_id"
                         ]
                     }
                 }
@@ -471,5 +498,37 @@ export class MySqlInvoiceRepository implements InvoiceRepository {
             });
             return "INVOICE_CANCELED";
         }
+    }
+
+    async addCostCenter({ id, user_id, costcenter }: AddCostCenter): Promise<any> {
+        if (!await this.findInvoiceById(id)) {
+            return 'INVOICE_NOT_FOUND';
+        }
+        let percentage = 0;
+        for (const e of costcenter) {    
+            if (!await this.mysqlCostCenterRepository.listCostCenterById(e.costcenter_id)) {
+                return `COST_CENTER_WITH_ID_${e.costcenter_id}_NOT_FOUND`;
+            }
+            percentage += e.percentage;
+        }
+        percentage = Math.round(percentage);
+        if (percentage !== 100) {
+            return `TOTAL_PERCENTAGE_IS_NOT_EQUAL_TO_100`;
+        }
+        for (const e of costcenter) {
+            await this.ixccUseCase.registerIxCC({
+                invoice_id: id,
+                costcenter_id: e.costcenter_id,
+                percentage: e.percentage
+            });
+        }
+        // Add note
+        await this.noteUseCase.registerNote({
+            invoice_id: id,
+            user_id,
+            not_description: 'Centros de costos añadidos',
+            not_type: 'EDITION'
+        });
+        return "COST_CENTER_ADDED";
     }
 }

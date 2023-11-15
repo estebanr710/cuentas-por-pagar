@@ -53,7 +53,7 @@ export default class IxCC extends Model {
 
     // "Many to many" relationship to "Cost Center" table
     @BelongsTo(() => CostCenter)
-    user!: CostCenter;
+    costcenter!: CostCenter;
 
     // IxCC percentage field
     @Column({

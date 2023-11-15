@@ -16,7 +16,8 @@ import {
     validatorAddNote,
     validatorApproveInvoice,
     validatorApproverActions,
-    validatorUpdateInvoice
+    validatorUpdateInvoice,
+    validatorAddCostCenter
 } from "../validators/invoice.validator";
 
 const ROUTER = Router();
@@ -41,6 +42,12 @@ ROUTER.get("/:page?:size?",
     authMiddleware, 
     validatorGetInvoices,
     invoiceController.getController
+);
+
+ROUTER.put("/costcenter/add", 
+    authMiddleware, 
+    validatorAddCostCenter,
+    invoiceController.addCostCenterController
 );
 
 ROUTER.put("/approvers/add", 
