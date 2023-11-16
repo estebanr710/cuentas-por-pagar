@@ -34,7 +34,11 @@ export class ProviderController {
         try {
             let { pro_nit, pro_name, pro_email } = matchedData(req);
             const PROVIDER = await this.providerUseCase.registerProvider({ pro_nit, pro_name, pro_email });
-            res.status(200).send(PROVIDER);    
+            if (PROVIDER === "PROVIDER_ALREADY_EXISTS") {
+                res.status(403).send({ status: 403, message: PROVIDER });    
+            } else {
+                res.send(PROVIDER);    
+            }
         } catch (e) {
             console.log(`Error: ${e}`);
         }

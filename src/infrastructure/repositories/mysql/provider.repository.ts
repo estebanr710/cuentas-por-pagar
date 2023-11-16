@@ -6,8 +6,13 @@ import Provider from "../../models/local.providers.schema";
 export class MySqlProviderRepository implements ProviderRepository {
 
     async registerProvider(providerMock: any): Promise<any> {
-        const PROVIDER = await Provider.create(providerMock);
-        return PROVIDER;
+        let { pro_nit, pro_email } = providerMock;
+        if (await Provider.findOne({ where: { pro_nit } }) || await Provider.findOne({ where: { pro_email } })) {
+            return "PROVIDER_ALREADY_EXISTS";
+        } else {
+            const PROVIDER = await Provider.create(providerMock);
+            return PROVIDER;
+        }
     }
     
     async listProviders(): Promise<any> {
