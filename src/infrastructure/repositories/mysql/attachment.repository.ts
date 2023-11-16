@@ -9,7 +9,7 @@ export class MySqlAttachmentRepository implements AttachmentRepository {
 
     async registerAttachment(attachmentMock: any): Promise<any> {
         let { invoice_id } = attachmentMock;
-        const VALIDATE_INVOICE = await this.mysqlInvoiceRepository.findInvoiceById(invoice_id);
+        const VALIDATE_INVOICE = await this.mysqlInvoiceRepository.findInvoiceByUUID(invoice_id);
         if (!VALIDATE_INVOICE) {
             return "INVOICE_NOT_FOUND";
         } else {

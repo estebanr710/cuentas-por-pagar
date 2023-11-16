@@ -54,6 +54,11 @@ export class MySqlInvoiceRepository implements InvoiceRepository {
         private mysqlCostCenterRepository = new MySqlCostCenterRepository
     ) { }
 
+    public async findInvoiceByUUID(id: string): Promise<any> {
+        const INVOICE = await Invoice.findByPk(id);
+        return INVOICE;
+    }
+
     async findInvoiceById(id: string): Promise<any> {
         const INVOICE = await Invoice.findOne({
             attributes: {
@@ -270,7 +275,7 @@ export class MySqlInvoiceRepository implements InvoiceRepository {
     }
 
     async addApprovers({ id, user_id, approvers }: AddApprovers): Promise<any> {
-        if (!await this.findInvoiceById(id)) {
+        if (!await this.findInvoiceByUUID(id)) {
             return 'INVOICE_NOT_FOUND';
         }
         for (const e of approvers) {    
@@ -301,7 +306,7 @@ export class MySqlInvoiceRepository implements InvoiceRepository {
 
     async addNote(note: NoteEntity): Promise<any> {
         let { invoice_id, user_id } = note;
-        if (!await this.findInvoiceById(invoice_id)) {
+        if (!await this.findInvoiceByUUID(invoice_id)) {
             return 'INVOICE_NOT_FOUND';
         }
         if (!await this.mysqlUserRepository.listUserByIdV2(user_id)) {
@@ -313,7 +318,7 @@ export class MySqlInvoiceRepository implements InvoiceRepository {
 
     async approveInvoice(approver: ApproverActions): Promise<any> {
         let { user_id, invoice_id, observation, inv_amount } = approver;
-        if (!await this.findInvoiceById(invoice_id)) {
+        if (!await this.findInvoiceByUUID(invoice_id)) {
             return 'INVOICE_NOT_FOUND';
         }
         const USER = await this.mysqlUserRepository.listUserByIdV2(user_id);
@@ -428,7 +433,7 @@ export class MySqlInvoiceRepository implements InvoiceRepository {
 
     async rejectInvoice(approver: ApproverActions): Promise<any> {
         let { user_id, invoice_id, observation } = approver;
-        if (!await this.findInvoiceById(invoice_id)) {
+        if (!await this.findInvoiceByUUID(invoice_id)) {
             return 'INVOICE_NOT_FOUND';
         }
         const USER = await this.mysqlUserRepository.listUserByIdV2(user_id);
@@ -466,7 +471,7 @@ export class MySqlInvoiceRepository implements InvoiceRepository {
 
     async returnInvoice(approver: ApproverActions): Promise<any> {
         let { user_id, invoice_id, observation } = approver;
-        if (!await this.findInvoiceById(invoice_id)) {
+        if (!await this.findInvoiceByUUID(invoice_id)) {
             return 'INVOICE_NOT_FOUND';
         }
         if (!await this.mysqlUserRepository.listUserByIdV2(user_id)) {
@@ -509,7 +514,7 @@ export class MySqlInvoiceRepository implements InvoiceRepository {
 
     async cancelInvoice(approver: ApproverActions): Promise<any> {
         let { user_id, invoice_id, observation } = approver;
-        if (!await this.findInvoiceById(invoice_id)) {
+        if (!await this.findInvoiceByUUID(invoice_id)) {
             return 'INVOICE_NOT_FOUND';
         }
         const USER = await this.mysqlUserRepository.listUserByIdV2(user_id);
@@ -536,7 +541,7 @@ export class MySqlInvoiceRepository implements InvoiceRepository {
     }
 
     async addCostCenter({ id, user_id, costcenter }: AddCostCenter): Promise<any> {
-        if (!await this.findInvoiceById(id)) {
+        if (!await this.findInvoiceByUUID(id)) {
             return 'INVOICE_NOT_FOUND';
         }
         let percentage = 0;
