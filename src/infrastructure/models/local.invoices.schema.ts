@@ -90,7 +90,11 @@ export default class Invoice extends Model {
     @Column({
         type: DataType.TEXT,
         get() {
-            return this.getDataValue('inv_email_body').toString('utf8')
+            if (this.getDataValue('inv_email_body')) {
+                return this.getDataValue('inv_email_body').toString('utf8');
+            } else {
+                return null;
+            }
         }
     })
     inv_email_body!: string;

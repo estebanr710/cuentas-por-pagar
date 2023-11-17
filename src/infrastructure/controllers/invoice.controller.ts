@@ -9,6 +9,7 @@ import { NoteUseCase } from "../../application/note.use.case";
 import { InvoiceUseCase } from "../../application/invoice.use.case"; 
 
 import { MySqlUserRepository } from "../repositories/mysql/user.repository";
+import { MySqlInvoiceRepository } from "../repositories/mysql/invoice.repository";
 
 export class InvoiceController {
 
@@ -18,7 +19,8 @@ export class InvoiceController {
         private noteRepository = new MySqlNoteRepository(),
         private noteUseCase = new NoteUseCase(noteRepository),
 
-        private mysqlUserRepository = new MySqlUserRepository
+        private mysqlUserRepository = new MySqlUserRepository,
+        private mysqlInvoiceRepository = new MySqlInvoiceRepository
     ) {}
 
     public insertController = async (req: Request, res: Response) => {
@@ -177,7 +179,7 @@ export class InvoiceController {
                 inv_amount,
                 user_id
             } = matchedData(req);
-            if (!await this.invoiceUseCase.getInvoice(id)) {
+            if (!await this.mysqlInvoiceRepository.findInvoiceByUUID(id)) {
                 return 'INVOICE_NOT_FOUND';
             }
             if (!await this.mysqlUserRepository.listUserByIdV2(user_id)) {
@@ -193,7 +195,7 @@ export class InvoiceController {
             ) {
                 res.status(403).send({ status: 403, message: 'NO_DATA' });
             } else {
-                const INVOICE: any = await this.invoiceUseCase.getInvoice(id);
+                const INVOICE: any = await this.mysqlInvoiceRepository.findInvoiceByUUID(id);
                 await this.invoiceUseCase.updateInvoice({
                     id,
                     inv_title,
@@ -203,7 +205,7 @@ export class InvoiceController {
                     inv_simi_state,
                     inv_amount
                 });
-                const INVOICE_2: any = await this.invoiceUseCase.getInvoice(id);
+                const INVOICE_2: any = await this.mysqlInvoiceRepository.findInvoiceByUUID(id);
                 // Edition fields values
                 let fieldName: string = '__default__';
                 let previousValue: any;

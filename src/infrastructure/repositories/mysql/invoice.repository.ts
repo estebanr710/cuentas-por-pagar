@@ -55,7 +55,54 @@ export class MySqlInvoiceRepository implements InvoiceRepository {
     ) { }
 
     public async findInvoiceByUUID(id: string): Promise<any> {
-        const INVOICE = await Invoice.findByPk(id);
+        const INVOICE = await Invoice.findByPk(id, {
+            attributes: {
+                exclude: [
+                    "state_id",
+                    "provider_id",
+                    "inv_modified_by",
+                    "inv_managed_by"
+                ] 
+            },
+            include: [
+                {
+                    model: State
+                },
+                {
+                    model: Provider
+                },
+                {
+                    model: User,
+                    as: "modifier",
+                    include: [
+                        {
+                            model: Role
+                        }
+                    ],
+                    attributes: {
+                        exclude: [
+                            "role_id",
+                            "use_microsoft_id"
+                        ]
+                    }
+                },
+                {
+                    model: User,
+                    as: "manager",
+                    include: [
+                        {
+                            model: Role
+                        }
+                    ],
+                    attributes: {
+                        exclude: [
+                            "role_id",
+                            "use_microsoft_id"
+                        ]
+                    }
+                }
+            ]
+        });
         return INVOICE;
     }
 
