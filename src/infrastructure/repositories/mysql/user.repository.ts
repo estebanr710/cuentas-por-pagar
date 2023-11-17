@@ -50,7 +50,20 @@ export class MySqlUserRepository implements UserRepository {
     }
 
     private async listUserById(use_microsoft_id: string): Promise<any> {
-        const USER = await User.findOne({ where: { use_microsoft_id } });
+        const USER = await User.findOne({
+            include: [
+                {
+                    model: Role
+                }
+            ],
+            attributes: {
+                exclude: [
+                    "role_id",
+                    "use_microsoft_id"
+                ]
+            },
+            where: { use_microsoft_id } 
+        });
         return USER;
     }
 
