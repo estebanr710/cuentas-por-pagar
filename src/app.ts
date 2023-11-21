@@ -49,7 +49,11 @@ const APP = express();
  */
 APP.use(cors());
 APP.use(express.json({ limit: '200mb' }));
-APP.use(express.urlencoded({limit: '200mb', extended: true, parameterLimit: 200000}));
+APP.use(express.urlencoded({
+    limit: '200mb',
+    extended: true,
+    parameterLimit: 200000
+}));
 APP.use(express.static('temp'));
 APP.use(ROUTER);
 
