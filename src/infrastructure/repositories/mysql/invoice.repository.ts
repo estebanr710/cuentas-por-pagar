@@ -382,7 +382,7 @@ export class MySqlInvoiceRepository implements InvoiceRepository {
         // If the current user is admin
         if (USER.role.id === ADMIN_ROLE) {
             // If invoice doesn't have approvers
-            if (!COUNT_APPROVERS) {
+            if (COUNT_APPROVERS.count === 0) {
                 // Update 'managed' fields [timestamps and managed by] on invoice record
                 await this.updateInvoice({
                     id: invoice_id,
