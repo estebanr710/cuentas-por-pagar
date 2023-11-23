@@ -1,15 +1,18 @@
 import { Request, Response } from "express";
 import { matchedData } from "express-validator";
 
+
 import { getPagination } from "../handlers/handle.pagination";
 import now from "../handlers/handle.now";
 
-import { MySqlNoteRepository } from "../repositories/mysql/note.repository";
 import { NoteUseCase } from "../../application/note.use.case";
 import { InvoiceUseCase } from "../../application/invoice.use.case"; 
+import { ProviderUseCase } from "../../application/provider.use.case";
 
 import { MySqlUserRepository } from "../repositories/mysql/user.repository";
 import { MySqlInvoiceRepository } from "../repositories/mysql/invoice.repository";
+import { MySqlProviderRepository } from "../repositories/mysql/provider.repository";
+import { MySqlNoteRepository } from "../repositories/mysql/note.repository";
 
 export class InvoiceController {
 
@@ -18,9 +21,12 @@ export class InvoiceController {
         //Note
         private noteRepository = new MySqlNoteRepository(),
         private noteUseCase = new NoteUseCase(noteRepository),
-
+        
         private mysqlUserRepository = new MySqlUserRepository,
-        private mysqlInvoiceRepository = new MySqlInvoiceRepository
+        private mysqlInvoiceRepository = new MySqlInvoiceRepository,
+        
+        private mysqlProviderRepository = new MySqlProviderRepository(),
+        private providerUseCase = new ProviderUseCase(mysqlProviderRepository),
     ) {}
 
     public insertController = async (req: Request, res: Response) => {
@@ -267,4 +273,15 @@ export class InvoiceController {
             res.status(500).send(`Error: ${e}`);
         }
     }
+
+    /* public sendToPagoTercerosController = async (req: Request, res: Response) => {
+        try {
+
+            let {  } = matchedData(req);
+
+
+        } catch (e) {
+            res.status(500).send(`Error: ${e}`);
+        }
+    } */
 }
