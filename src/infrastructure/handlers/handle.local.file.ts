@@ -4,7 +4,6 @@ import { getDiggestValue, getJWTByUser } from "./handle.microsoft";
 import axios from "axios";
 import randomString from "./handle.random.string";
 import * as fs from "fs";
-import Invoice from "../models/local.invoices.schema";
 
 const SFTP_HOST = process.env.SFTP_HOST ?? '__default__';
 const SFTP_PORT = Number(process.env.SFTP_PORT) ?? 22;
@@ -14,8 +13,6 @@ const SFTP_PASSWORD = process.env.SFTP_PASSWORD ?? '__default__';
 const saveToFTPServer = async (ATTACHMENT: any) => {
     try {
         let { id, invoice_id } = ATTACHMENT;
-
-        const INVOICE = await Invoice.findByPk(ATTACHMENT.invoice_id);
 
         const ACCESS_TOKEN = await getJWTByUser();
         const DIGGEST_VALUE = await getDiggestValue();
