@@ -63,7 +63,7 @@ const saveToFTPServer = async (ATTACHMENT: any) => {
 
         await client.fastPut(`${TEMP_PATH}/${TEMP_FILENAME}`, `public_html/cuentas-por-pagar/${INVOICE?.inv_reference}/${TEMP_FILENAME}`);
 
-        const att_local_relative_path = `public_html/cuentas-por-pagar/${INVOICE?.inv_reference}/${TEMP_FILENAME}`;
+        const att_local_relative_path = `cuentas-por-pagar/${INVOICE?.inv_reference}/${TEMP_FILENAME}`;
 
         await Attachment.update({ att_local_relative_path }, { where: { id } });
 
