@@ -13,7 +13,7 @@ const SFTP_PASSWORD = process.env.SFTP_PASSWORD ?? '__default__';
 
 const saveToFTPServer = async (ATTACHMENT: any) => {
     try {
-        let { id } = ATTACHMENT;
+        let { id, invoice_id } = ATTACHMENT;
 
         const INVOICE = await Invoice.findByPk(ATTACHMENT.invoice_id);
 
@@ -57,13 +57,13 @@ const saveToFTPServer = async (ATTACHMENT: any) => {
             password: SFTP_PASSWORD
         });
 
-        if (!await CLIENT.exists(`public_html/cuentas-por-pagar/${INVOICE?.inv_reference}`)) {
-            await CLIENT.mkdir(`public_html/cuentas-por-pagar/${INVOICE?.inv_reference}`, false);
+        if (!await CLIENT.exists(`public_html/cuentas-por-pagar/${invoice_id}`)) {
+            await CLIENT.mkdir(`public_html/cuentas-por-pagar/${invoice_id}`, false);
         }
 
-        await CLIENT.fastPut(`${TEMP_PATH}/${TEMP_FILENAME}`, `public_html/cuentas-por-pagar/${INVOICE?.inv_reference}/${TEMP_FILENAME}`);
+        await CLIENT.fastPut(`${TEMP_PATH}/${TEMP_FILENAME}`, `public_html/cuentas-por-pagar/${invoice_id}/${TEMP_FILENAME}`);
 
-        const att_local_relative_path = `cuentas-por-pagar/${INVOICE?.inv_reference}/${TEMP_FILENAME}`;
+        const att_local_relative_path = `cuentas-por-pagar/${invoice_id}/${TEMP_FILENAME}`;
 
         await Attachment.update({ att_local_relative_path }, { where: { id } });
 
