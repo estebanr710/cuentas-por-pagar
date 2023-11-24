@@ -8,12 +8,14 @@ export class AttachmentValue implements AttachmentEntity {
     att_name: string;
     att_extension: string;
     att_relative_path: string;
+    att_local_relative_path?: string;
 
-    constructor({ invoice_id, att_name, att_extension, att_relative_path }: AttachmentEntity) {
+    constructor({ invoice_id, att_name, att_extension, att_relative_path, att_local_relative_path }: AttachmentEntity) {
         this.id = uuid();
         this.invoice_id = invoice_id;
         this.att_name = att_name;
         this.att_extension = att_extension;
         this.att_relative_path = att_relative_path;
+        this.att_local_relative_path = att_local_relative_path ?? '__default__';
     }
 }

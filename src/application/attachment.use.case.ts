@@ -6,8 +6,8 @@ export class AttachmentUseCase {
 
     constructor(private readonly attachmentRepository: AttachmentRepository) { }
 
-    public registerAttachment = async ({ invoice_id, att_name, att_extension, att_relative_path }: AttachmentEntity) => {
-        let attachmentValue = new AttachmentValue({ invoice_id, att_name, att_extension, att_relative_path });
+    public registerAttachment = async ({ invoice_id, att_name, att_extension, att_relative_path, att_local_relative_path }: AttachmentEntity) => {
+        let attachmentValue = new AttachmentValue({ invoice_id, att_name, att_extension, att_relative_path, att_local_relative_path });
         let attachmentCreated = await this.attachmentRepository.registerAttachment(attachmentValue);
         return attachmentCreated;
     }

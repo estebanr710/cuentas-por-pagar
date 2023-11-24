@@ -3,5 +3,6 @@ export interface AttachmentEntity {
     invoice_id: string,
     att_name: string,
     att_extension: string,
-    att_relative_path: string
+    att_relative_path: string,
+    att_local_relative_path?: string,
 }

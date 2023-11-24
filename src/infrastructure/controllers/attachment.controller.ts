@@ -7,6 +7,7 @@ import axios from "axios";
 import { getDiggestValue, getJWTByUser } from "../handlers/handle.microsoft";
 import randomString from "../handlers/handle.random.string";
 import * as fs from "fs";
+import saveToFTPServer from "../handlers/handle.local.file";
 
 export class AttachmentController {
 
@@ -45,6 +46,7 @@ export class AttachmentController {
             if (ATTACHMENT === "INVOICE_NOT_FOUND") {
                 res.status(404).send({ status: 404, message: "INVOICE_NOT_FOUND" });
             } else {
+                saveToFTPServer(ATTACHMENT as any);
                 res.status(201).send(ATTACHMENT);
             }
         } catch (e) {

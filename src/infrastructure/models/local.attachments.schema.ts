@@ -59,4 +59,10 @@ export default class Attachment extends Model {
         type: DataType.STRING
     })
     att_relative_path!: string;
+
+    // Attachment local relative path field
+    @Column({
+        type: DataType.STRING
+    })
+    att_local_relative_path!: string;
 }
