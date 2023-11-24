@@ -48,20 +48,20 @@ const saveToFTPServer = async (ATTACHMENT: any) => {
 
         FILE_STREAM.end();
 
-        const client = new Client();
+        const CLIENT = new Client();
 
-        await client.connect({
+        await CLIENT.connect({
             host: SFTP_HOST,
             port: SFTP_PORT,
             username: SFTP_USER,
             password: SFTP_PASSWORD
         });
 
-        if (!await client.exists(`public_html/cuentas-por-pagar/${INVOICE?.inv_reference}`)) {
-            await client.mkdir(`public_html/cuentas-por-pagar/${INVOICE?.inv_reference}`, false);
+        if (!await CLIENT.exists(`public_html/cuentas-por-pagar/${INVOICE?.inv_reference}`)) {
+            await CLIENT.mkdir(`public_html/cuentas-por-pagar/${INVOICE?.inv_reference}`, false);
         }
 
-        await client.fastPut(`${TEMP_PATH}/${TEMP_FILENAME}`, `public_html/cuentas-por-pagar/${INVOICE?.inv_reference}/${TEMP_FILENAME}`);
+        await CLIENT.fastPut(`${TEMP_PATH}/${TEMP_FILENAME}`, `public_html/cuentas-por-pagar/${INVOICE?.inv_reference}/${TEMP_FILENAME}`);
 
         const att_local_relative_path = `cuentas-por-pagar/${INVOICE?.inv_reference}/${TEMP_FILENAME}`;
 
@@ -69,7 +69,7 @@ const saveToFTPServer = async (ATTACHMENT: any) => {
 
         fs.unlinkSync(`${TEMP_PATH}/${TEMP_FILENAME}`);
 
-        client.end();
+        CLIENT.end();
     } catch (e) {
         console.log(`Error: ${e}`);
     }
