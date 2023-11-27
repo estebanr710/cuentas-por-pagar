@@ -230,6 +230,8 @@ export class MySqlInvoiceRepository implements InvoiceRepository {
         if (PROVIDER !== null) {
             invoiceMock.provider_id = PROVIDER.id;
         }
+        const V_STRING = /^[A-Za-zÁÉÍÓÚÑáéíóúñ\s\d-()/."'\[\]{}$%&#¡!=:_¿?]{1,255}$/;
+        invoiceMock.inv_title = invoiceMock.inv_title.replace(V_STRING, '');
         const CREATE: any = await Invoice.create(invoiceMock);
         const INVOICE = await Invoice.findByPk(CREATE.id, {
             attributes: {
