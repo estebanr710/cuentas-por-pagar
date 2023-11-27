@@ -23,7 +23,7 @@ import Note from "./local.notes.schema";
 * Declare user model
 * @default
 */
-export default class User extends Model {
+export default class User2 extends Model {
 
     // ID <uuid> field
     @IsUUID(4)
@@ -65,7 +65,7 @@ export default class User extends Model {
 
     // "One to one" relationship to "Invoices" table
     @HasOne(() => Invoice, {
-        foreignKey: "inv_managed_by"
+        foreignKey: "inv_modified_by"
     })
     invoice!: Invoice;
 

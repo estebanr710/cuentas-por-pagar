@@ -20,6 +20,7 @@ import Note from "../../models/local.notes.schema";
 import Approver from "../../models/local.approvers.schema";
 import CostCenter from "../../models/local.costcenter.schema";
 import IxCC from "../../models/local.ixcc.schema";
+import User2 from "../../models/local.users2.schema";
 
 /**
  * DB Connection object.
@@ -35,6 +36,7 @@ const LOCAL_SEQUELIZE = new Sequelize({
         Invoice,
         Role,
         User,
+        User2,
         Attachment,
         State,
         Provider,

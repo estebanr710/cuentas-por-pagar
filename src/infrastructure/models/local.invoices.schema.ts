@@ -13,6 +13,7 @@ import Provider from "./local.providers.schema";
 import Note from "./local.notes.schema";
 import Approver from "./local.approvers.schema";
 import IxCC from "./local.ixcc.schema";
+import User2 from "./local.users2.schema";
 
 /**
 * Declare Tablename invoices
@@ -125,15 +126,15 @@ export default class Invoice extends Model {
     
     // Invoice modifiedBy <Reference> field
     @IsUUID(4)
-    @ForeignKey(() => User)
+    @ForeignKey(() => User2)
     @Column({
         type: DataType.STRING
     })
     inv_modified_by!: string;
 
     // "One to one" relationship to "Users" table
-    @BelongsTo(() => User)
-    modifier!: User;
+    @BelongsTo(() => User2)
+    modifier!: User2;
     
     // Invoice managedAt <Timestamps> field
     @Column({

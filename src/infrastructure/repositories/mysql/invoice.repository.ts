@@ -29,6 +29,7 @@ import { NoteEntity } from "../../../domain/note/note.entity";
 import { MySqlCostCenterRepository } from "./costcenter.repository";
 
 import emojiStrip from "emoji-strip";
+import User2 from "../../models/local.users2.schema";
 
 const APPROVED_STATE: string = process.env.APPROVED_STATE_ID ?? '__defalult__';
 const REJECTED_STATE: string = process.env.REJECTED_STATE_ID ?? '__defalult__';
@@ -126,7 +127,7 @@ export class MySqlInvoiceRepository implements InvoiceRepository {
                     model: Provider
                 },
                 {
-                    model: User,
+                    model: User2,
                     as: "modifier",
                     include: [
                         {
@@ -308,6 +309,25 @@ export class MySqlInvoiceRepository implements InvoiceRepository {
                         "id",
                         "use_name"
                     ]
+                },
+                {
+                    model: Approver,
+                    include: [
+                        {
+                            model: User,
+                            attributes: [
+                                "id",
+                                "use_name"
+                            ]
+                        }
+                    ],
+                    attributes: {
+                        exclude: [
+                            "id",
+                            "invoice_id",
+                            "user_id"
+                        ]
+                    }
                 }
             ],
             order: [
