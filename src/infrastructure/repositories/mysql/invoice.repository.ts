@@ -28,6 +28,8 @@ import { IxCCUseCase } from "../../../application/ixcc.use.case";
 import { NoteEntity } from "../../../domain/note/note.entity";
 import { MySqlCostCenterRepository } from "./costcenter.repository";
 
+import emojiStrip from "emoji-strip";
+
 const APPROVED_STATE: string = process.env.APPROVED_STATE_ID ?? '__defalult__';
 const REJECTED_STATE: string = process.env.REJECTED_STATE_ID ?? '__defalult__';
 const IN_PROCESS_STATE: string = process.env.IN_PROCESS_STATE_ID ?? '__defalult__';
@@ -230,8 +232,7 @@ export class MySqlInvoiceRepository implements InvoiceRepository {
         if (PROVIDER !== null) {
             invoiceMock.provider_id = PROVIDER.id;
         }
-        const V_STRING = /^[A-Za-zÁÉÍÓÚÑáéíóúñ\s\d-()/."'\[\]{}$%&#¡!=:_¿?]{1,255}$/;
-        invoiceMock.inv_title = invoiceMock.inv_title.replace(V_STRING, '');
+        invoiceMock.inv_title = emojiStrip(invoiceMock.inv_title).trim();
         const CREATE: any = await Invoice.create(invoiceMock);
         const INVOICE = await Invoice.findByPk(CREATE.id, {
             attributes: {
