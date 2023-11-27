@@ -75,7 +75,7 @@ export class MySqlInvoiceRepository implements InvoiceRepository {
                     model: Provider
                 },
                 {
-                    model: User,
+                    model: User2,
                     as: "modifier",
                     include: [
                         {
@@ -253,7 +253,7 @@ export class MySqlInvoiceRepository implements InvoiceRepository {
                     model: Provider
                 },
                 {
-                    model: User,
+                    model: User2,
                     as: "modifier",
                     attributes: [
                         "id",
@@ -295,7 +295,7 @@ export class MySqlInvoiceRepository implements InvoiceRepository {
                     model: Provider
                 },
                 {
-                    model: User,
+                    model: User2,
                     as: "modifier",
                     attributes: [
                         "id",
