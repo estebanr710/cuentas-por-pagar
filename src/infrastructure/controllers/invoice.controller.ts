@@ -13,6 +13,7 @@ import { MySqlUserRepository } from "../repositories/mysql/user.repository";
 import { MySqlInvoiceRepository } from "../repositories/mysql/invoice.repository";
 import { MySqlProviderRepository } from "../repositories/mysql/provider.repository";
 import { MySqlNoteRepository } from "../repositories/mysql/note.repository";
+import axios from "axios";
 
 export class InvoiceController {
 
@@ -328,10 +329,32 @@ export class InvoiceController {
                 pay_lis_origin_money_nit: pay_lis_origin_money_nit ?? null,
                 pay_lis_ledger_account: pay_lis_ledger_account ?? null
             }
-
-            const ENDPOINT = process.env.CREATE_PAYMENT_ENDPOINT ?? '__default__';
-
+            
             // Send to pago-terceros
+            const CREATE_PAYMENT_ENDPOINT = process.env.CREATE_PAYMENT_ENDPOINT ?? '__default__';
+            const AUTH_ENDPOINT = process.env.AUTH_ENDPOINT ?? '__default__';
+            const X_API_KEY = process.env.X_API_KEY ?? '__default__';
+            const AUTH_USER = process.env.AUTH_USER ?? '__default__';
+            const AUTH_PASSWORD = process.env.AUTH_PASSWORD ?? '__default__';
+
+            const AUTH = await axios.request({
+                method: 'post',
+                maxBodyLength: Infinity,
+                url: AUTH_ENDPOINT,
+                headers: { 
+                  'xapikey': X_API_KEY, 
+                  'Content-Type': 'application/json'
+                },
+                data: {
+                    email: AUTH_USER,
+                    password: AUTH_PASSWORD
+                }
+            });
+
+
+            
+
+
         } catch (e) {
             res.status(500).send(`Error: ${e}`);
         }
