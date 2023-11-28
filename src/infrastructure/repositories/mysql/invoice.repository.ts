@@ -530,6 +530,12 @@ export class MySqlInvoiceRepository implements InvoiceRepository {
             inv_managed_by: user_id,
             state_id: REJECTED_STATE
         });
+        // Update approver
+        await this.approverUseCase.updateApprover({
+            user_id,
+            invoice_id,
+            app_state: false
+        });
         await this.noteUseCase.registerNote({
             invoice_id,
             user_id,

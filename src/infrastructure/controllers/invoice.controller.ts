@@ -279,14 +279,61 @@ export class InvoiceController {
         }
     }
 
-    /* public sendToPagoTercerosController = async (req: Request, res: Response) => {
+    public sendToPagoTercerosController = async (req: Request, res: Response) => {
         try {
+            let {
+                id,
+                user_id,
+                provider_id,
+                pay_description,
+                pay_lis_payment_amount,
+                invoice_due_date,
+                pay_lis_holder_immovable,
+                pay_lis_origin_money_nit,
+                pay_lis_ledger_account
+            } = matchedData(req);
+            const VALIDATE_INVOICE = await this.mysqlInvoiceRepository.findInvoiceByUUID(id);
+            if (!VALIDATE_INVOICE) {
+                return 'INVOICE_NOT_FOUND';
+            }
+            if (!await this.mysqlUserRepository.listUserByIdV2(user_id)) {
+                return `USER_NOT_FOUND`;
+            }
+            const PROVIDER = await this.providerUseCase.getProvider(provider_id);
+            if (!PROVIDER) {
+                return `PROVIDER_NOT_FOUND`;
+            }
+            const INVOICE = await this.mysqlInvoiceRepository.findInvoiceById(VALIDATE_INVOICE.inv_reference);
+            let text = '';
+            for (const e of INVOICE.approvers) {
+                if (e.app_state === true) {
+                    text += `${e.user.use_name}, `;
+                }
+            }
+            text = text.trim().slice(0, -1);
+            const DATA: any = {
+                pay_description: pay_description,
+                category_id: 12,
+                pay_lis_holder_name: PROVIDER.pro_name,
+                pay_lis_holder_mail: PROVIDER.pro_email,
+                pay_lis_holder_document_number: PROVIDER.pro_nit,
+                document_type_id: PROVIDER.pro_document_type,
+                bank_id: PROVIDER.pro_bank,
+                pay_lis_account_number: PROVIDER.pro_account_number,
+                pay_lis_account_type: PROVIDER.pro_account_type,
+                pay_lis_payment_amount,
+                invoice_due_date: invoice_due_date ?? null,
+                text: text.length > 0 ? text : '---',
+                pay_lis_holder_immovable: pay_lis_holder_immovable ?? null,
+                pay_lis_origin_money_nit: pay_lis_origin_money_nit ?? null,
+                pay_lis_ledger_account: pay_lis_ledger_account ?? null
+            }
 
-            let { id, user_id } = matchedData(req);
+            const ENDPOINT = process.env.CREATE_PAYMENT_ENDPOINT ?? '__default__';
 
-
+            // Send to pago-terceros
         } catch (e) {
             res.status(500).send(`Error: ${e}`);
         }
-    } */
+    }
 }
