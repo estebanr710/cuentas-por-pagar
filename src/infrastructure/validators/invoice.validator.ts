@@ -87,6 +87,22 @@ const validatorUpdateInvoice = [
     }
 ];
 
+const validatorSendToPagoTerceros = [
+    check("id", "Invalid id [min_length: 5, max_length: 50]").exists().notEmpty().isLength({ min: 5, max: 50 }),
+    check("pay_description", "Invalid payment description").exists().notEmpty().isLength({ min: 5, max: 150 }),
+    check("pay_lis_payment_amount", "Invalid payment amount").exists().notEmpty().isInt({ min: 1 }),
+    check("category_id", "Invalid category_id").exists().notEmpty().isInt({ min: 1 }),
+    check("provider_id", "Invalid provider_id [min_length: 5, max_length: 50]").exists().notEmpty().isLength({ min: 5, max: 50 }),
+    check("user_id", "Invalid user_id [min_length: 5, max_length: 50]").exists().notEmpty().isLength({ min: 5, max: 50 }),
+    check("invoice_due_date", "Invalid invoice due date").optional(),
+    check("pay_lis_origin_money_nit", "Invalid origin money NIT").optional(),
+    check("pay_lis_holder_immovable", "Invalid account holder immovable").optional(),
+    check("pay_lis_ledger_account", "Invalid ledger account number").optional(),
+    (req: Request, res: Response, next: NextFunction) => {
+        return validateResults(req, res, next);
+    }
+];
+
 export {
     validatorCreateInvoice,
     validatorGetInvoices,
@@ -96,5 +112,6 @@ export {
     validatorApproveInvoice,
     validatorApproverActions,
     validatorUpdateInvoice,
-    validatorAddCostCenter
+    validatorAddCostCenter,
+    validatorSendToPagoTerceros
 };

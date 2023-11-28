@@ -17,7 +17,8 @@ import {
     validatorApproveInvoice,
     validatorApproverActions,
     validatorUpdateInvoice,
-    validatorAddCostCenter
+    validatorAddCostCenter,
+    validatorSendToPagoTerceros
 } from "../validators/invoice.validator";
 
 const ROUTER = Router();
@@ -90,6 +91,12 @@ ROUTER.put("/",
     authMiddleware, 
     validatorUpdateInvoice,
     invoiceController.updateController
+);
+
+ROUTER.post("/pagoterceros/send", 
+    authMiddleware, 
+    validatorSendToPagoTerceros,
+    invoiceController.sendToPagoTercerosController
 );
 
 export { ROUTER };
