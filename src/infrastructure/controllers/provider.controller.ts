@@ -46,8 +46,17 @@ export class ProviderController {
     
     public updateController = async (req: Request, res: Response) => {
         try {
-            let { id, pro_nit, pro_name, pro_email, pro_state } = matchedData(req);
-            let provider = await this.providerUseCase.updateProvider({ id, pro_nit, pro_name, pro_email, pro_state });
+            let { 
+                id,
+                pro_name,
+                pro_email,
+                pro_document_type,
+                pro_bank,
+                pro_account_number,
+                pro_account_type,
+                pro_state
+            } = matchedData(req);
+            let provider = await this.providerUseCase.updateProvider({ id, pro_name, pro_email, pro_document_type, pro_bank, pro_account_number, pro_account_type, pro_state });
             if (!provider) {
                 res.status(403).send({ status: 403, message: "ERROR_UPDATING_PROVIDER" });
             } else {

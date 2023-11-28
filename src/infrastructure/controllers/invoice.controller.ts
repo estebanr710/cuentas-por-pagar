@@ -181,7 +181,6 @@ export class InvoiceController {
                 provider_id,
                 state_id,
                 inv_cp_simi,
-                inv_simi_state,
                 inv_amount,
                 user_id
             } = matchedData(req);
@@ -196,19 +195,22 @@ export class InvoiceController {
                 !provider_id &&
                 !state_id &&
                 !inv_cp_simi &&
-                !inv_simi_state &&
                 !inv_amount
             ) {
                 res.status(403).send({ status: 403, message: 'NO_DATA' });
             } else {
                 const INVOICE: any = await this.mysqlInvoiceRepository.findInvoiceByUUID(id);
+                let simiState = false;
+                if (inv_cp_simi) {
+                    simiState = true;
+                }
                 await this.invoiceUseCase.updateInvoice({
                     id,
                     inv_title,
                     provider_id,
                     state_id,
                     inv_cp_simi,
-                    inv_simi_state,
+                    inv_simi_state: simiState,
                     inv_amount
                 });
                 const INVOICE_2: any = await this.mysqlInvoiceRepository.findInvoiceByUUID(id);
@@ -230,11 +232,14 @@ export class InvoiceController {
                     fieldName = 'CP SIMI';
                     previousValue = INVOICE.inv_cp_simi ? INVOICE.inv_cp_simi : '---';
                     currentValue = inv_cp_simi;
-                }
-                if (inv_simi_state) {
-                    fieldName = 'ESTADO SIMI';
-                    previousValue = INVOICE.inv_simi_state ? 'CONTABILIZADO' : 'NO CONTABILIZADO';
-                    currentValue = inv_simi_state ? 'CONTABILIZADO' : 'NO CONTABILIZADO';
+                    if (simiState) {
+                        await this.noteUseCase.registerNote({
+                            invoice_id: id,
+                            user_id,
+                            not_description: `El campo ESTADO SIMI ha sido actualizado:\r\nValor anterior: ${INVOICE.inv_simi_state ? 'CONTABILIZADO' : 'NO CONTABILIZADO'}\r\nValor actual: CONTABILIZADO`,
+                            not_type: 'EDITION'
+                        });
+                    }
                 }
                 if (inv_amount) {
                     fieldName = 'VALOR';
@@ -277,7 +282,7 @@ export class InvoiceController {
     /* public sendToPagoTercerosController = async (req: Request, res: Response) => {
         try {
 
-            let {  } = matchedData(req);
+            let { id, user_id } = matchedData(req);
 
 
         } catch (e) {

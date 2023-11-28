@@ -63,3 +63,14 @@ export interface ApproverActions extends ApproverEntity {
     observation: string;
     inv_amount?: number;
 }
+
+export interface UpdateProvider {
+    id: string,
+    pro_name?: string | null,
+    pro_email?: string | null,
+    pro_document_type?: number | null,
+    pro_bank?: number | null,
+    pro_account_number?: string | null,
+    pro_account_type?: 'AHORROS' | 'CORRIENTE' | null,
+    pro_state?: boolean | null,
+}

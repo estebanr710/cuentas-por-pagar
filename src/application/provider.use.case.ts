@@ -1,6 +1,7 @@
 import { ProviderEntity } from "../domain/provider/provider.entity";
 import { ProviderRepository } from "../domain/provider/provider.repository";
 import { ProviderValue } from "../domain/provider/provider.value";
+import { UpdateProvider } from "../infrastructure/interfaces/main";
 
 export class ProviderUseCase {
 
@@ -22,9 +23,9 @@ export class ProviderUseCase {
         return PROVIDER;
     }
 
-    public updateProvider = async (provider: { id: string, pro_nit: string | undefined, pro_name: string | undefined, pro_email: string | undefined, pro_state: boolean | undefined }) => {
-        let { id, pro_nit, pro_name, pro_email, pro_state } = provider;
-        let updateProvider = await this.providerRepository.updateProvider({ id, pro_nit, pro_name, pro_email, pro_state });
+    public updateProvider = async (provider: UpdateProvider) => {
+        let { id, pro_name, pro_email, pro_document_type, pro_bank, pro_account_number, pro_account_type, pro_state } = provider;
+        let updateProvider = await this.providerRepository.updateProvider({ id, pro_name, pro_email, pro_document_type, pro_bank, pro_account_number, pro_account_type, pro_state });
         return updateProvider;
     }
 }

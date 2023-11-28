@@ -1,5 +1,6 @@
 import { ProviderEntity } from "../../../domain/provider/provider.entity";
 import { ProviderRepository } from "../../../domain/provider/provider.repository";
+import { UpdateProvider } from "../../interfaces/main";
 
 import Provider from "../../models/local.providers.schema";
 
@@ -31,8 +32,8 @@ export class MySqlProviderRepository implements ProviderRepository {
         return PROVIDER;
     }
     
-    async updateProvider({ id, pro_name, pro_nit, pro_email, pro_state }: { id: string, pro_name: string | undefined, pro_nit: string | undefined, pro_email: string | undefined, pro_state: boolean | undefined }): Promise<string | null> {
-        let updateProvider = await Provider.update({ pro_name, pro_nit, pro_email, pro_state }, { where: { id } });
+    async updateProvider({ id, pro_name, pro_email, pro_document_type, pro_bank, pro_account_number, pro_account_type, pro_state }: UpdateProvider): Promise<string | null> {
+        let updateProvider = await Provider.update({ pro_name, pro_email, pro_document_type, pro_bank, pro_account_number, pro_account_type, pro_state }, { where: { id } });
         if (updateProvider) {
             return 'PROVIDER_UPDATED';
         } else {

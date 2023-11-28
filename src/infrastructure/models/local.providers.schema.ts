@@ -48,6 +48,30 @@ export default class Provider extends Model {
     })
     pro_email!: string;
 
+    // Provider document type field
+    @Column({
+        type: DataType.NUMBER
+    })
+    pro_document_type!: number;
+
+    // Provider bank field
+    @Column({
+        type: DataType.NUMBER
+    })
+    pro_bank!: number;
+
+    // Provider account number field
+    @Column({
+        type: DataType.STRING
+    })
+    pro_account_number!: string;
+
+    // Provider account number field
+    @Column({
+        type: DataType.ENUM('AHORROS', 'CORRIENTE')
+    })
+    pro_account_type!: string;
+
     // Provider email field
     @Column({
         type: DataType.BOOLEAN
