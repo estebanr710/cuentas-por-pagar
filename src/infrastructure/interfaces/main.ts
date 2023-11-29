@@ -45,18 +45,18 @@ export interface CustomInvoice {
 export interface AddApprovers {
     id: string;
     user_id: string;
-    approvers: string[]
+    approvers: string[];
 }
 
 export interface CustomCostCenter {
     costcenter_id: string;
-    percentage: number
+    percentage: number;
 }
 
 export interface AddCostCenter {
     id: string;
     user_id: string;
-    costcenter: CustomCostCenter[]
+    costcenter: CustomCostCenter[];
 }
 
 export interface ApproverActions extends ApproverEntity {
@@ -65,12 +65,18 @@ export interface ApproverActions extends ApproverEntity {
 }
 
 export interface UpdateProvider {
-    id: string,
-    pro_name?: string | null,
-    pro_email?: string | null,
-    pro_document_type?: number | null,
-    pro_bank?: number | null,
-    pro_account_number?: string | null,
-    pro_account_type?: 'AHORROS' | 'CORRIENTE' | null,
-    pro_state?: boolean | null,
+    id: string;
+    pro_name?: string | null;
+    pro_email?: string | null;
+    pro_document_type?: number | null;
+    pro_bank?: number | null;
+    pro_account_number?: string | null;
+    pro_account_type?: 'AHORROS' | 'CORRIENTE' | null;
+    pro_state?: boolean | null;
+}
+
+export interface SendMailData {
+    to: string;
+    subject: string;
+    template: string;
 }
