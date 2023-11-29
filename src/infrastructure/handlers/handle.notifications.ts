@@ -3,14 +3,7 @@ import { SendMailData } from "../interfaces/main";
 import axios from "axios";
 import User from "../models/local.users.schema";
 
-export class Notifications {
-
-    /**
-     * Cuando se crea la factura a todos los admin p1 
-     * A los aprobadores cuando se les asigna una factura p2
-     * Notificación cuando se gestione una factura a todos los admin p3
-     * 
-    */
+export default class Notifications {
 
     private sendMessage = async ({ to, subject, template }: SendMailData): Promise<void> => {
         try {
@@ -48,7 +41,7 @@ export class Notifications {
         }
     }    
 
-    public createInvoiceNotification = async (inv_reference: number | undefined): Promise<void> => {
+    public createInvoiceNotification = async (inv_reference?: number): Promise<void> => {
         try {
             const ADMIN_ROLE = process.env.ADMIN_ROLE_ID ?? '__default__';
 
@@ -76,17 +69,50 @@ export class Notifications {
         }
     }
 
-    public assignApproverNotification = async () => {
+    public assignApproverNotification = async ({ to, inv_reference }: { to: string, inv_reference?: number }) => {
         try {
-            
+            let template = fs.readFileSync(`${__dirname}/../templates/assign_approver_template.html`).toString();
+
+            template = template.replaceAll('{{inv_reference}}', String(inv_reference));
+
+            const SUBJECT = `CXP - ¡Nueva factura asignada!`;
+
+            await this.sendMessage({
+                to,
+                subject: SUBJECT,
+                template
+            });
         } catch (e) {
             console.log(`Error: ${e}`);
         }
     }
 
-    public invoiceManagmentNotification = async () => {
+    public invoiceManagmentNotification = async ({ inv_reference, observation, managment }: { inv_reference?: number, observation: string, managment: string }) => {
         try {
-            
+            /**
+             * Only for: [ APPROVE, REJECT, CANCEL, RETURN ]
+             */
+            const ADMIN_ROLE = process.env.ADMIN_ROLE_ID ?? '__default__';
+
+            let template = fs.readFileSync(`${__dirname}/../templates/invoice_managment_template.html`).toString();
+
+            template = template.replaceAll('{{inv_reference}}', String(inv_reference)).replaceAll('{{observation}}', observation).replaceAll('{{managment}}', managment);
+
+            const SUBJECT = `CXP - ¡Factura gestionada!`;
+
+            const ADMINS: any = await User.findAll({
+                where: {
+                    role_id: ADMIN_ROLE
+                }
+            });
+
+            for (const e of ADMINS) {
+                await this.sendMessage({
+                    to: e.use_email,
+                    subject: SUBJECT,
+                    template
+                });
+            }
         } catch (e) {
             console.log(`Error: ${e}`);
         }

@@ -13,7 +13,6 @@ import { MySqlInvoiceRepository } from "../repositories/mysql/invoice.repository
 import { MySqlProviderRepository } from "../repositories/mysql/provider.repository";
 import { MySqlNoteRepository } from "../repositories/mysql/note.repository";
 import axios from "axios";
-import { Notifications } from "../handlers/handle.notifications";
 
 export class InvoiceController {
 
@@ -34,8 +33,6 @@ export class InvoiceController {
         try {
             let { inv_title, inv_email_body, inv_senders_email } = matchedData(req);
             const INVOICE = await this.invoiceUseCase.registerInvoice({ inv_title, inv_email_body, inv_senders_email });
-            const MESSAGE = new Notifications();
-            MESSAGE.createInvoiceNotification(INVOICE?.inv_reference);
             res.status(201).send(INVOICE);
         } catch (e) {
             res.status(500).send(`Error: ${e}`);

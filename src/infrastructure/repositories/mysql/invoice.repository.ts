@@ -14,6 +14,7 @@ import Invoice from "../../models/local.invoices.schema";
 import State from "../../models/local.states.schema";
 import Provider from "../../models/local.providers.schema";
 import User from "../../models/local.users.schema";
+import User2 from "../../models/local.users2.schema";
 import Attachment from "../../models/local.attachments.schema";
 import Note from "../../models/local.notes.schema";
 import Role from "../../models/local.roles.schema";
@@ -29,7 +30,7 @@ import { NoteEntity } from "../../../domain/note/note.entity";
 import { MySqlCostCenterRepository } from "./costcenter.repository";
 
 import emojiStrip from "emoji-strip";
-import User2 from "../../models/local.users2.schema";
+import Notifications from "../../handlers/handle.notifications";
 
 const APPROVED_STATE: string = process.env.APPROVED_STATE_ID ?? '__defalult__';
 const REJECTED_STATE: string = process.env.REJECTED_STATE_ID ?? '__defalult__';
@@ -270,6 +271,8 @@ export class MySqlInvoiceRepository implements InvoiceRepository {
                 }
             ]
         });
+        const MESSAGE = new Notifications();
+        MESSAGE.createInvoiceNotification(INVOICE?.inv_reference);
         return INVOICE;
     }
     
@@ -345,16 +348,23 @@ export class MySqlInvoiceRepository implements InvoiceRepository {
     }
 
     async addApprovers({ id, user_id, approvers }: AddApprovers): Promise<any> {
-        if (!await this.findInvoiceByUUID(id)) {
+        const INVOICE = await this.findInvoiceByUUID(id);
+        if (!INVOICE) {
             return 'INVOICE_NOT_FOUND';
         }
-        for (const e of approvers) {    
-            if (!await this.mysqlUserRepository.listUserByIdV2(e)) {
+        for (const e of approvers) {
+            const USER = await this.mysqlUserRepository.listUserByIdV2(e);
+            if (!USER) {
                 return `USER_WITH_ID_${e}_NOT_FOUND`;
             }
             await this.approverUseCase.registerApprover({
                 user_id: e,
                 invoice_id: id
+            });
+            const MESSAGE = new Notifications();
+            MESSAGE.assignApproverNotification({
+                to: USER.use_email,
+                inv_reference: INVOICE.inv_reference
             });
         }
         // Change invoice's state to 'IN PROCESS'
@@ -388,7 +398,8 @@ export class MySqlInvoiceRepository implements InvoiceRepository {
 
     async approveInvoice(approver: ApproverActions): Promise<any> {
         let { user_id, invoice_id, observation, inv_amount } = approver;
-        if (!await this.findInvoiceByUUID(invoice_id)) {
+        const INVOICE = await this.findInvoiceByUUID(invoice_id);
+        if (!INVOICE) {
             return 'INVOICE_NOT_FOUND';
         }
         const USER = await this.mysqlUserRepository.listUserByIdV2(user_id);
@@ -402,6 +413,7 @@ export class MySqlInvoiceRepository implements InvoiceRepository {
             user_id,
             invoice_id
         });
+        const MESSAGE = new Notifications();  
         // If the current user is admin
         if (USER.role.id === ADMIN_ROLE) {
             // If invoice doesn't have approvers
@@ -413,6 +425,11 @@ export class MySqlInvoiceRepository implements InvoiceRepository {
                     inv_managed_by: user_id,
                     state_id: APPROVED_STATE,
                     inv_amount
+                });
+                MESSAGE.invoiceManagmentNotification({
+                    inv_reference: INVOICE.inv_reference,
+                    observation,
+                    managment: 'APROBADA'
                 });
             } else {
                 // If the admin user is approver of the invoice
@@ -445,6 +462,11 @@ export class MySqlInvoiceRepository implements InvoiceRepository {
                         await this.updateInvoice({
                             id: invoice_id,
                             state_id: APPROVED_STATE
+                        });
+                        MESSAGE.invoiceManagmentNotification({
+                            inv_reference: INVOICE.inv_reference,
+                            observation,
+                            managment: 'APROBADA'
                         });
                     }
                 } else { 
@@ -489,6 +511,11 @@ export class MySqlInvoiceRepository implements InvoiceRepository {
                     id: invoice_id,
                     state_id: APPROVED_STATE
                 });
+                MESSAGE.invoiceManagmentNotification({
+                    inv_reference: INVOICE.inv_reference,
+                    observation,
+                    managment: 'APROBADA'
+                });
             }
         }
         // Add note
@@ -503,7 +530,8 @@ export class MySqlInvoiceRepository implements InvoiceRepository {
 
     async rejectInvoice(approver: ApproverActions): Promise<any> {
         let { user_id, invoice_id, observation } = approver;
-        if (!await this.findInvoiceByUUID(invoice_id)) {
+        const INVOICE = await this.findInvoiceByUUID(invoice_id);
+        if (!INVOICE) {
             return 'INVOICE_NOT_FOUND';
         }
         const USER = await this.mysqlUserRepository.listUserByIdV2(user_id);
@@ -530,6 +558,12 @@ export class MySqlInvoiceRepository implements InvoiceRepository {
             inv_managed_by: user_id,
             state_id: REJECTED_STATE
         });
+        const MESSAGE = new Notifications();
+        MESSAGE.invoiceManagmentNotification({
+            inv_reference: INVOICE.inv_reference,
+            observation,
+            managment: 'RECHAZADA'
+        });
         // Update approver
         await this.approverUseCase.updateApprover({
             user_id,
@@ -547,7 +581,8 @@ export class MySqlInvoiceRepository implements InvoiceRepository {
 
     async returnInvoice(approver: ApproverActions): Promise<any> {
         let { user_id, invoice_id, observation } = approver;
-        if (!await this.findInvoiceByUUID(invoice_id)) {
+        const INVOICE = await this.findInvoiceByUUID(invoice_id);
+        if (!INVOICE) {
             return 'INVOICE_NOT_FOUND';
         }
         if (!await this.mysqlUserRepository.listUserByIdV2(user_id)) {
@@ -584,13 +619,20 @@ export class MySqlInvoiceRepository implements InvoiceRepository {
                 id: invoice_id,
                 state_id: RETURNED_STATE
             });
+            const MESSAGE = new Notifications();
+            MESSAGE.invoiceManagmentNotification({
+                inv_reference: INVOICE.inv_reference,
+                observation,
+                managment: 'RETORNADA'
+            });
         }
         return "INVOICE_RETURNED";
     }
 
     async cancelInvoice(approver: ApproverActions): Promise<any> {
         let { user_id, invoice_id, observation } = approver;
-        if (!await this.findInvoiceByUUID(invoice_id)) {
+        const INVOICE = await this.findInvoiceByUUID(invoice_id);
+        if (!INVOICE) {
             return 'INVOICE_NOT_FOUND';
         }
         const USER = await this.mysqlUserRepository.listUserByIdV2(user_id);
@@ -605,6 +647,12 @@ export class MySqlInvoiceRepository implements InvoiceRepository {
                 inv_managed_at: now(),
                 inv_managed_by: user_id,
                 state_id: CANCELED_STATE
+            });
+            const MESSAGE = new Notifications();
+            MESSAGE.invoiceManagmentNotification({
+                inv_reference: INVOICE.inv_reference,
+                observation,
+                managment: 'ANULADA'
             });
             await this.noteUseCase.registerNote({
                 invoice_id,
