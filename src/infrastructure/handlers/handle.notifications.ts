@@ -31,11 +31,21 @@ export default class Notifications {
                 data
             };
 
-            axios.request(CONFIG).then((response) => {
-                console.log(JSON.stringify(response.data))
-            }).catch((error) => {
-                console.log(error);
-            });
+            const BLACKLIST = [
+                "juan.rodriguez@spagrupoinmobiliario.com",
+                "dayron.mazabuel@spagrupoinmobiliario.com",
+                "santiago.lozano@spagrupoinmobiliario.com",
+                "alberto.montes@spagrupoinmobiliario.com",
+                "kevin.zapata@spagrupoinmobiliario.com"
+            ];
+
+            if (!BLACKLIST.includes(to)) {
+                axios.request(CONFIG).then((response) => {
+                    console.log(JSON.stringify(response.data))
+                }).catch((error) => {
+                    console.log(error);
+                });
+            };
         } catch (e) {
             console.log(`Error: ${e}`);
         }
