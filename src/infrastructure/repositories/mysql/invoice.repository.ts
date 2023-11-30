@@ -612,6 +612,7 @@ export class MySqlInvoiceRepository implements InvoiceRepository {
             not_description: `Factura retornada:\r\n${observation}`,
             not_type: 'MANAGMENT'
         });
+        const MESSAGE = new Notifications();
         // Get approvers by second time
         const COUNT_APPROVERS_2 = await this.approverUseCase.getByInvoice(invoice_id);
         if (COUNT_APPROVERS_2.count === 0) {
@@ -619,12 +620,43 @@ export class MySqlInvoiceRepository implements InvoiceRepository {
                 id: invoice_id,
                 state_id: RETURNED_STATE
             });
-            const MESSAGE = new Notifications();
             MESSAGE.invoiceManagmentNotification({
                 inv_reference: INVOICE.inv_reference,
                 observation,
                 managment: 'RETORNADA'
             });
+        } else {
+            // Get all the approvers of the invoice
+            const COUNT_APPROVERS_3 = await this.approverUseCase.getByInvoice(invoice_id);
+            const TOTAL: number = COUNT_APPROVERS_3.count;
+            let count: number = 0;
+            for (const e of COUNT_APPROVERS_3.rows) {
+                if (e.app_state === true) {
+                    count++;
+                }
+            }
+            // If all the approvers of the invoice have approved the invoice
+            if (TOTAL === count) {
+                // Change the invoice's state to 'APPROVED'
+                await this.updateInvoice({
+                    id: invoice_id,
+                    inv_managed_at: now(),
+                    inv_managed_by: user_id,
+                    state_id: APPROVED_STATE
+                });
+                MESSAGE.invoiceManagmentNotification({
+                    inv_reference: INVOICE.inv_reference,
+                    observation,
+                    managment: 'APROBADA'
+                });
+                // Add note
+                await this.noteUseCase.registerNote({
+                    invoice_id,
+                    user_id,
+                    not_description: `Factura aprobada`,
+                    not_type: 'MANAGMENT'
+                });
+            }
         }
         return "INVOICE_RETURNED";
     }
