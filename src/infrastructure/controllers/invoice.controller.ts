@@ -225,7 +225,7 @@ export class InvoiceController {
                 }
                 if (provider_id) {
                     fieldName = 'PROVEEDOR';
-                    previousValue = INVOICE.provider.pro_name ? INVOICE.provider.pro_name : '---';
+                    previousValue = INVOICE.provider !== null ? INVOICE.provider.pro_name : '---';
                     currentValue = INVOICE_2.provider.pro_name;
                 }
                 if (inv_cp_simi) {
