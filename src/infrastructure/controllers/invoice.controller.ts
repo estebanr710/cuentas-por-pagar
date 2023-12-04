@@ -358,7 +358,7 @@ export class InvoiceController {
 
             const TOKEN: string = AUTH.data.data.token;
 
-            /* await axios.request({
+            await axios.request({
                 method: 'post',
                 maxBodyLength: Infinity,
                 url: CREATE_PAYMENT_ENDPOINT,
@@ -367,7 +367,7 @@ export class InvoiceController {
                     'Authorization': `Bearer ${TOKEN}`
                 },
                 data: DATA
-            }); */
+            });
 
             await this.invoiceUseCase.updateInvoice({
                 id,
