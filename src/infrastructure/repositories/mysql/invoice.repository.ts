@@ -30,6 +30,7 @@ import { NoteEntity } from "../../../domain/note/note.entity";
 import { MySqlCostCenterRepository } from "./costcenter.repository";
 
 import emojiStrip from "emoji-strip";
+import emojiRegex from "emoji-regex";
 import Notifications from "../../handlers/handle.notifications";
 
 const APPROVED_STATE: string = process.env.APPROVED_STATE_ID ?? '__defalult__';
@@ -234,7 +235,13 @@ export class MySqlInvoiceRepository implements InvoiceRepository {
         if (PROVIDER !== null) {
             invoiceMock.provider_id = PROVIDER.id;
         }
-        invoiceMock.inv_title = emojiStrip(invoiceMock.inv_title).trim();
+        
+        const PATTERN = emojiRegex();
+        let title = emojiStrip(invoiceMock.inv_title).trim();
+        title = title.replaceAll(PATTERN, '');
+
+        invoiceMock.inv_title = title;
+        
         const CREATE: any = await Invoice.create(invoiceMock);
         const INVOICE = await Invoice.findByPk(CREATE.id, {
             attributes: {
