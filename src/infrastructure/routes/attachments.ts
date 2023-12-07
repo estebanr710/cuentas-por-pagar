@@ -6,7 +6,7 @@ import { MySqlAttachmentRepository } from "../repositories/mysql/attachment.repo
 import { AttachmentUseCase } from "../../application/attachment.use.case";
 import { AttachmentController } from "../controllers/attachment.controller"; 
 
-import { validatorCreateAttachment, validatorGetAttachmentById, validatorGetAttachmentsByInvoiceId } from "../validators/attachment.validator";
+import { validatorCreateAttachment, validatorGetAttachmentById, validatorGetAttachmentsByInvoiceId, validatorSendToFTP } from "../validators/attachment.validator";
 
 const ROUTER = Router();
 
@@ -36,6 +36,12 @@ ROUTER.get("/content/:id",
     authMiddleware,
     validatorGetAttachmentById,
     attachmentController.getContentController
+)
+
+ROUTER.put("/sendToFTP/:id", 
+    authMiddleware,
+    validatorSendToFTP,
+    attachmentController.sendToFTP
 )
 
 export { ROUTER };

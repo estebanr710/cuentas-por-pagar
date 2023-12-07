@@ -27,4 +27,11 @@ let validatorGetAttachmentsByInvoiceId = [
     }
 ];
 
-export { validatorCreateAttachment, validatorGetAttachmentById, validatorGetAttachmentsByInvoiceId };
+let validatorSendToFTP = [
+    check("id", "Invalid id [isInt]").exists().notEmpty().isLength({ min: 5, max: 50 }),
+    (req: Request, res: Response, next: NextFunction) => {
+        return validateResults(req, res, next);
+    }
+];
+
+export { validatorCreateAttachment, validatorGetAttachmentById, validatorGetAttachmentsByInvoiceId, validatorSendToFTP };

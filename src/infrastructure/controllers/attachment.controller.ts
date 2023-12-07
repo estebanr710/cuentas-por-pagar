@@ -46,8 +46,23 @@ export class AttachmentController {
             if (ATTACHMENT === "INVOICE_NOT_FOUND") {
                 res.status(404).send({ status: 404, message: "INVOICE_NOT_FOUND" });
             } else {
-                saveToFTPServer(ATTACHMENT as any);
+                await saveToFTPServer(ATTACHMENT as any);
                 res.status(201).send(ATTACHMENT);
+            }
+        } catch (e) {
+            console.log(`Error: ${e}`);
+        }
+    }
+
+    public sendToFTP = async (req: Request, res: Response) => {
+        try {
+            let { id } = matchedData(req);
+            const ATTACHMENT = await this.attachmentUseCase.getAttachment(id);
+            if (!ATTACHMENT) {
+                res.status(404).send({ status: 404, message: "ATTACHMENT_NOT_EXISTS" });
+            } else {
+                await saveToFTPServer(ATTACHMENT as any);
+                res.send({ status:200, message: "OK" });
             }
         } catch (e) {
             console.log(`Error: ${e}`);
