@@ -4,8 +4,9 @@
 * @implements {object} Model
 * @implements {object} DataType
 */
-import { Table, Column, Model, DataType, IsUUID, HasOne } from "sequelize-typescript";
+import { Table, Column, Model, DataType, IsUUID, HasOne, HasMany } from "sequelize-typescript";
 import Invoice from "./local.invoices.schema";
+import ProviderAuditory from "./local.providerauditories.schema";
 
 /**
 * Declare Tablename providers
@@ -78,9 +79,15 @@ export default class Provider extends Model {
     })
     pro_state!: boolean;
 
-    // "One to one" relationship to "Users" table
+    // "One to one" relationship to "Invoices" table
     @HasOne(() => Invoice, {
         foreignKey: "provider_id"
     })
     invoice!: Invoice;
+
+    // "One to one" relationship to "Providerauditories" table
+    @HasMany(() => ProviderAuditory, {
+        foreignKey: "provider_id"
+    })
+    auditories!: ProviderAuditory[];
 }

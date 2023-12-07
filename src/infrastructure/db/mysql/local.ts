@@ -21,6 +21,7 @@ import Approver from "../../models/local.approvers.schema";
 import CostCenter from "../../models/local.costcenter.schema";
 import IxCC from "../../models/local.ixcc.schema";
 import User2 from "../../models/local.users2.schema";
+import ProviderAuditory from "../../models/local.providerauditories.schema";
 
 /**
  * DB Connection object.
@@ -43,7 +44,8 @@ const LOCAL_SEQUELIZE = new Sequelize({
         Note,
         Approver,
         CostCenter,
-        IxCC
+        IxCC,
+        ProviderAuditory
     ]
 });
 

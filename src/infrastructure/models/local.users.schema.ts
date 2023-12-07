@@ -9,6 +9,7 @@ import { Table, Column, Model, DataType, HasOne, BelongsTo, PrimaryKey, IsUUID, 
 import Role from "./local.roles.schema";
 import Invoice from "./local.invoices.schema";
 import Note from "./local.notes.schema";
+import ProviderAuditory from "./local.providerauditories.schema";
 
 /**
 * Declare Tablename users
@@ -74,4 +75,10 @@ export default class User extends Model {
         foreignKey: "user_id"
     })
     note!: Note;
+
+    // "One to one" relationship to "Providerauditories" table
+    @HasOne(() => ProviderAuditory, {
+        foreignKey: "pro_aud_user"
+    })
+    provider_auditory!: ProviderAuditory;
 }
