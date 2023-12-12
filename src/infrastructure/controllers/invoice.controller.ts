@@ -208,7 +208,7 @@ export class InvoiceController {
                     provider_id,
                     state_id,
                     inv_cp_simi,
-                    inv_simi_state: inv_cp_simi.length > 0 ? true : false,
+                    inv_simi_state: inv_cp_simi && inv_cp_simi.length > 0 ? true : false,
                     inv_amount
                 });
                 const INVOICE_2: any = await this.mysqlInvoiceRepository.findInvoiceByUUID(id);
