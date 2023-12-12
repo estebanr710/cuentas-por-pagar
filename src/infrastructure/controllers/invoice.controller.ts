@@ -185,10 +185,12 @@ export class InvoiceController {
                 user_id
             } = matchedData(req);
             if (!await this.mysqlInvoiceRepository.findInvoiceByUUID(id)) {
-                return 'INVOICE_NOT_FOUND';
+                res.status(404).send({ status: 404, message: "INVOICE_NOT_FOUND" });
+                return;
             }
             if (!await this.mysqlUserRepository.listUserByIdV2(user_id)) {
-                return `USER_NOT_FOUND`;
+                res.status(404).send({ status: 404, message: "USER_NOT_FOUND" });
+                return;
             }
             if (
                 !inv_title &&
@@ -200,17 +202,13 @@ export class InvoiceController {
                 res.status(403).send({ status: 403, message: 'NO_DATA' });
             } else {
                 const INVOICE: any = await this.mysqlInvoiceRepository.findInvoiceByUUID(id);
-                let simiState = false;
-                if (inv_cp_simi) {
-                    simiState = true;
-                }
                 await this.invoiceUseCase.updateInvoice({
                     id,
                     inv_title,
                     provider_id,
                     state_id,
                     inv_cp_simi,
-                    inv_simi_state: simiState,
+                    inv_simi_state: inv_cp_simi.length > 0 ? true : false,
                     inv_amount
                 });
                 const INVOICE_2: any = await this.mysqlInvoiceRepository.findInvoiceByUUID(id);
@@ -232,7 +230,7 @@ export class InvoiceController {
                     fieldName = 'CP SIMI';
                     previousValue = INVOICE.inv_cp_simi ? INVOICE.inv_cp_simi : '---';
                     currentValue = inv_cp_simi;
-                    if (simiState) {
+                    if (INVOICE_2.inv_simi_state) {
                         await this.noteUseCase.registerNote({
                             invoice_id: id,
                             user_id,
