@@ -47,7 +47,14 @@ export default class Invoice extends Model {
 
     // Invoice title field
     @Column({
-        type: DataType.STRING
+        type: DataType.STRING,
+        get() {
+            if (this.getDataValue('inv_title')) {
+                return this.getDataValue('inv_title').toString('utf8');
+            } else {
+                return null;
+            }
+        }
     })
     inv_title!: string;
 
