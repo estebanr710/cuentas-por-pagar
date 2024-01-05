@@ -364,15 +364,21 @@ export class MySqlInvoiceRepository implements InvoiceRepository {
             if (!USER) {
                 return `USER_WITH_ID_${e}_NOT_FOUND`;
             }
-            await this.approverUseCase.registerApprover({
+            const APPROVER = await this.approverRepository.getApprover({
                 user_id: e,
                 invoice_id: id
             });
-            const MESSAGE = new Notifications();
-            MESSAGE.assignApproverNotification({
-                to: USER.use_email,
-                inv_reference: INVOICE.inv_reference
-            });
+            if (!APPROVER) {
+                await this.approverUseCase.registerApprover({
+                    user_id: e,
+                    invoice_id: id
+                });
+                const MESSAGE = new Notifications();
+                MESSAGE.assignApproverNotification({
+                    to: USER.use_email,
+                    inv_reference: INVOICE.inv_reference
+                });
+            }
         }
         // Change invoice's state to 'IN PROCESS'
         await this.updateInvoice({
