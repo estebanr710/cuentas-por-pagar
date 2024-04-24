@@ -8,6 +8,7 @@ import { getDiggestValue, getJWTByUser } from "../handlers/handle.microsoft";
 import randomString from "../handlers/handle.random.string";
 import * as fs from "fs";
 import saveToFTPServer from "../handlers/handle.local.file";
+import Attachment from "../models/local.attachments.schema";
 
 export class AttachmentController {
 
@@ -46,8 +47,9 @@ export class AttachmentController {
             if (ATTACHMENT === "INVOICE_NOT_FOUND") {
                 res.status(404).send({ status: 404, message: "INVOICE_NOT_FOUND" });
             } else {
-                await saveToFTPServer(ATTACHMENT as any);
-                res.status(201).send(ATTACHMENT);
+                if (await saveToFTPServer(ATTACHMENT as any) === 200) {
+                    res.status(201).send(ATTACHMENT);
+                }
             }
         } catch (e) {
             console.log(`Error: ${e}`);
@@ -64,6 +66,25 @@ export class AttachmentController {
                 await saveToFTPServer(ATTACHMENT as any);
                 res.send({ status:200, message: "OK" });
             }
+        } catch (e) {
+            console.log(`Error: ${e}`);
+        }
+    }
+
+    public sendToFTP2 = async (req: Request, res: Response) => {
+        try {
+            const ATTACHMENTS = await Attachment.findAll({
+                where: {
+                    att_local_relative_path: '__default__'
+                }
+            })
+            for (const e of ATTACHMENTS) {      
+                const ATTACHMENT = await this.attachmentUseCase.getAttachment(e.id);
+                if (ATTACHMENT) {
+                    await saveToFTPServer(ATTACHMENT as any);
+                }
+            }
+            res.send({ status:200, message: "OK" });
         } catch (e) {
             console.log(`Error: ${e}`);
         }

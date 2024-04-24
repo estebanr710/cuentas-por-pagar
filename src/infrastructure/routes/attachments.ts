@@ -44,4 +44,8 @@ ROUTER.put("/sendToFTP/:id",
     attachmentController.sendToFTP
 )
 
+ROUTER.put("/sendToFTP", 
+    attachmentController.sendToFTP2
+)
+
 export { ROUTER };

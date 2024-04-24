@@ -65,8 +65,10 @@ const saveToFTPServer = async (ATTACHMENT: any) => {
         await Attachment.update({ att_local_relative_path }, { where: { id } });
 
         fs.unlinkSync(`${TEMP_PATH}/${TEMP_FILENAME}`);
-
+        
         CLIENT.end();
+
+        return 200;
     } catch (e) {
         console.log(`Error: ${e}`);
     }
